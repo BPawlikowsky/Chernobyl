@@ -1,5 +1,8 @@
 package com.chernobyl.gameengine.window;
 
+import com.chernobyl.gameengine.events.*;
+import org.lwjgl.glfw.GLFWErrorCallback;
+import org.lwjgl.glfw.GLFWErrorCallbackI;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.system.MemoryStack;
 
@@ -7,15 +10,16 @@ import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
 import static com.chernobyl.gameengine.Asserts.HB_CORE_ASSERT;
+import static com.chernobyl.gameengine.Log.HB_CORE_ERROR;
 import static com.chernobyl.gameengine.Log.HB_CORE_INFO;
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class LinuxWindow extends Window{
     private long glfwWindow;
     private boolean vSync;
+    public IEventCallback eventCallback;
     static boolean s_GLFWInitialized = false;
 
     private LinuxWindow(){
@@ -50,6 +54,10 @@ public class LinuxWindow extends Window{
         return Window.window;
     }
 
+    private void glfwErrorCallback(int err, long desc) {
+        HB_CORE_ERROR("GLFW Error({0}): {1}", err, GLFWErrorCallback.getDescription(desc));
+    }
+
     void Init()
     {
         HB_CORE_INFO("Creating window {0} ({1}, {2})", this.title, this.width, this.height);
@@ -59,6 +67,7 @@ public class LinuxWindow extends Window{
             // TODO: glfwTerminate on system shutdown
             boolean success = glfwInit();
             HB_CORE_ASSERT(success, "Could not intialize GLFW!");
+            glfwSetErrorCallback(this::glfwErrorCallback);
 
             s_GLFWInitialized = true;
         }
@@ -69,6 +78,81 @@ public class LinuxWindow extends Window{
 
         glfwMakeContextCurrent(glfwWindow);
         SetVSync(true);
+
+        // Set GLFW callbacks
+        glfwSetWindowSizeCallback(glfwWindow, (long window, int width, int height) ->
+        {
+            this.width = width;
+            this.height = height;
+
+            WindowResizeEvent event = new WindowResizeEvent(width, height);
+            eventCallback.invoke(event);
+        });
+
+        glfwSetWindowCloseCallback(glfwWindow, (long window) ->
+        {
+            
+            WindowCloseEvent event = new WindowCloseEvent();
+            eventCallback.invoke(event);
+        });
+
+        glfwSetKeyCallback(glfwWindow, (long window, int key, int scancode, int action, int mods) ->
+        {
+            
+
+            switch (action)
+            {
+                case GLFW_PRESS:
+                {
+                    KeyPressedEvent event = new KeyPressedEvent(key, 0);
+                    eventCallback.invoke(event);
+                    break;
+                }
+                case GLFW_RELEASE:
+                {
+                    KeyReleasedEvent event = new KeyReleasedEvent(key);
+                    eventCallback.invoke(event);
+                    break;
+                }
+                case GLFW_REPEAT:
+                {
+                    KeyPressedEvent event = new KeyPressedEvent(key, 1);
+                    eventCallback.invoke(event);
+                    break;
+                }
+            }
+        });
+
+        glfwSetMouseButtonCallback(glfwWindow, (long window, int button, int action, int mods) ->
+        {
+            switch (action)
+            {
+                case GLFW_PRESS:
+                {
+                    MouseButtonPressedEvent event = new MouseButtonPressedEvent(button);
+                    eventCallback.invoke(event);
+                    break;
+                }
+                case GLFW_RELEASE:
+                {
+                    MouseButtonReleasedEvent event = new MouseButtonReleasedEvent(button);
+                    eventCallback.invoke(event);
+                    break;
+                }
+            }
+        });
+
+        glfwSetScrollCallback(glfwWindow, (long window, double xOffset, double yOffset) ->
+        {
+            MouseScrolledEvent event = new MouseScrolledEvent((float)xOffset, (float)yOffset);
+            eventCallback.invoke(event);
+        });
+
+        glfwSetCursorPosCallback(glfwWindow, (long window, double xPos, double yPos) ->
+        {
+            MouseMovedEvent event = new MouseMovedEvent((float)xPos, (float)yPos);
+            eventCallback.invoke(event);
+        });
     }
 
     public void Shutdown()
@@ -80,6 +164,7 @@ public class LinuxWindow extends Window{
         // Terminate GLFW and free the error callback
         glfwTerminate();
         glfwSetErrorCallback(null).free();
+        HB_CORE_INFO("Shutdown finished successfully");
     }
 
     @Override
@@ -89,8 +174,8 @@ public class LinuxWindow extends Window{
     }
 
     @Override
-    void SetEventCallback(IEventCallback callback) {
-
+    public void SetEventCallback(IEventCallback callback) {
+       eventCallback = callback;
     }
 
     @Override

@@ -12,7 +12,7 @@ public abstract class Window {
     public abstract void Shutdown();
 
     // Window attributes
-    abstract void SetEventCallback(IEventCallback callback);
+    public abstract void SetEventCallback(IEventCallback callback);
     abstract void SetVSync(boolean enabled);
     abstract boolean IsVSync();
 }
