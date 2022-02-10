@@ -9,9 +9,6 @@ public class EntryPoint<T extends Application> {
     }
 
     public void main(String[] args) {
-        Application app = client.Create();
-
-        app.Run();
-        app = null;
+        client.Run();
     }
 }

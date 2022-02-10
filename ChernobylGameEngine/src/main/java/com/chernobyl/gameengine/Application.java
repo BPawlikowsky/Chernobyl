@@ -1,24 +1,27 @@
 package com.chernobyl.gameengine;
 
-import com.chernobyl.gameengine.events.WindowResizeEvent;
+import com.chernobyl.gameengine.window.LinuxWindow;
+import com.chernobyl.gameengine.window.Window;
+import org.lwjgl.opengl.GL;
 
-import static com.chernobyl.gameengine.Log.*;
-import static com.chernobyl.gameengine.events.enums.EventCategory.*;
+import static org.lwjgl.opengl.GL11.*;
 
 public abstract class Application {
+    private final Window window;
+    private boolean running = false;
 
-    public void Run() {
-        WindowResizeEvent e = new WindowResizeEvent(1280, 720);
-        if (e.IsInCategory(EventCategoryApplication))
-        {
-            HB_TRACE(e.toString());
-        }
-        if (e.IsInCategory(EventCategoryInput))
-        {
-            HB_TRACE(e.toString());
-        }
-        while (true);
+    public Application() {
+        window = LinuxWindow.get();
     }
 
-    abstract public Application Create();
+    public void Run() {
+        running = true;
+        while (running) {
+            GL.createCapabilities();
+            glClearColor(1, 0, 1, 1);
+            glClear(GL_COLOR_BUFFER_BIT);
+            window.OnUpdate();
+        }
+        window.Shutdown();
+    }
 }

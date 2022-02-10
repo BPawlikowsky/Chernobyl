@@ -3,7 +3,7 @@ package com.chernobyl.gameengine.events;
 import com.chernobyl.gameengine.events.enums.EventCategory;
 import com.chernobyl.gameengine.events.enums.EventType;
 
-abstract class Event {
+public abstract class Event {
     protected EventType eventType = GetStaticType();
 
     public EventType GetEventType() { return GetStaticType(); }
