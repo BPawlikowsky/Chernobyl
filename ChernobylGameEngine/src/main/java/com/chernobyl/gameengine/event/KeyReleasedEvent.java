@@ -1,6 +1,6 @@
-package com.chernobyl.gameengine.events;
+package com.chernobyl.gameengine.event;
 
-import com.chernobyl.gameengine.events.enums.EventType;
+import com.chernobyl.gameengine.event.enums.EventType;
 
 public class KeyReleasedEvent extends KeyEvent {
     public KeyReleasedEvent(int keyCode) {
@@ -14,8 +14,8 @@ public class KeyReleasedEvent extends KeyEvent {
 
     @Override
     public String toString() {
-        return eventType.name() + ":" +
-                ", keyCode=" + keyCode +
-                "|---";
+        return "KeyReleasedEvent{" +
+                "keyCode=" + keyCode +
+                '}';
     }
 }

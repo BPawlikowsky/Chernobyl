@@ -1,10 +1,10 @@
-package com.chernobyl.gameengine.events;
+package com.chernobyl.gameengine.event;
 
-import com.chernobyl.gameengine.events.enums.EventType;
+import com.chernobyl.gameengine.event.enums.EventType;
 import lombok.Getter;
 
-import static com.chernobyl.gameengine.events.enums.EventCategory.EventCategoryInput;
-import static com.chernobyl.gameengine.events.enums.EventCategory.EventCategoryMouse;
+import static com.chernobyl.gameengine.event.enums.EventCategory.EventCategoryInput;
+import static com.chernobyl.gameengine.event.enums.EventCategory.EventCategoryMouse;
 
 public class MouseScrolledEvent extends Event{
     @Getter

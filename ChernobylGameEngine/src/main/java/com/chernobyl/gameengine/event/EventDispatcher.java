@@ -1,6 +1,6 @@
-package com.chernobyl.gameengine.events;
+package com.chernobyl.gameengine.event;
 
-import com.chernobyl.gameengine.events.enums.EventType;
+import com.chernobyl.gameengine.event.enums.EventType;
 
 public class EventDispatcher {
     private final Event event;
@@ -12,7 +12,7 @@ public class EventDispatcher {
     public <T extends Event>boolean Dispatch(IEventFn<T> func, EventType eventType) {
         if (event.GetEventType() == eventType)
         {
-            event.m_Handled = func.fn((T)event);
+            event.setM_Handled(func.fn((T) event));
             return true;
         }
         return false;

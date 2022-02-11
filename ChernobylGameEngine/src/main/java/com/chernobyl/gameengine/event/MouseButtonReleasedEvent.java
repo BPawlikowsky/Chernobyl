@@ -1,6 +1,6 @@
-package com.chernobyl.gameengine.events;
+package com.chernobyl.gameengine.event;
 
-import com.chernobyl.gameengine.events.enums.EventType;
+import com.chernobyl.gameengine.event.enums.EventType;
 
 public class MouseButtonReleasedEvent extends MouseButtonEvent{
     public MouseButtonReleasedEvent(int button) {

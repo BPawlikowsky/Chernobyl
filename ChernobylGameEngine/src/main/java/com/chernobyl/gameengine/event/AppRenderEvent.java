@@ -1,8 +1,8 @@
-package com.chernobyl.gameengine.events;
+package com.chernobyl.gameengine.event;
 
-import com.chernobyl.gameengine.events.enums.EventType;
+import com.chernobyl.gameengine.event.enums.EventType;
 
-import static com.chernobyl.gameengine.events.enums.EventCategory.EventCategoryApplication;
+import static com.chernobyl.gameengine.event.enums.EventCategory.EventCategoryApplication;
 
 public class AppRenderEvent extends Event{
     @Override

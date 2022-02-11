@@ -1,6 +1,6 @@
-package com.chernobyl.gameengine.events;
+package com.chernobyl.gameengine.event;
 
-import com.chernobyl.gameengine.events.enums.EventType;
+import com.chernobyl.gameengine.event.enums.EventType;
 import lombok.Getter;
 
 public class KeyPressedEvent extends KeyEvent {
@@ -23,9 +23,9 @@ public class KeyPressedEvent extends KeyEvent {
 
     @Override
     public String toString() {
-        return eventType.name() + ":" +
-                ", keyCode=" + keyCode +
+        return "KeyPressedEvent{" +
+                "keyCode=" + keyCode +
                 ", repeatCount=" + repeatCount +
-                "|---";
+                '}';
     }
 }

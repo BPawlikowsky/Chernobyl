@@ -1,13 +1,7 @@
 package com.chernobyl.gameengine.window;
 
-import com.chernobyl.gameengine.events.*;
+import com.chernobyl.gameengine.event.*;
 import org.lwjgl.glfw.GLFWErrorCallback;
-import org.lwjgl.glfw.GLFWErrorCallbackI;
-import org.lwjgl.glfw.GLFWVidMode;
-import org.lwjgl.system.MemoryStack;
-
-import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
 
 import static com.chernobyl.gameengine.Asserts.HB_CORE_ASSERT;
 import static com.chernobyl.gameengine.Log.HB_CORE_ERROR;

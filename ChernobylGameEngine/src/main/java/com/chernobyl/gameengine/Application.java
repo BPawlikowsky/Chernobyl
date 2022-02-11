@@ -1,11 +1,14 @@
 package com.chernobyl.gameengine;
 
-import com.chernobyl.gameengine.events.Event;
-import com.chernobyl.gameengine.events.EventDispatcher;
-import com.chernobyl.gameengine.events.WindowCloseEvent;
-import com.chernobyl.gameengine.events.enums.EventType;
+import com.chernobyl.gameengine.event.Event;
+import com.chernobyl.gameengine.event.EventDispatcher;
+import com.chernobyl.gameengine.event.WindowCloseEvent;
+import com.chernobyl.gameengine.event.enums.EventType;
+import com.chernobyl.gameengine.layer.Layer;
+import com.chernobyl.gameengine.layer.LayerStack;
 import com.chernobyl.gameengine.window.LinuxWindow;
 import com.chernobyl.gameengine.window.Window;
+import lombok.Getter;
 import org.lwjgl.opengl.GL;
 
 import static com.chernobyl.gameengine.Log.HB_CORE_TRACE;
@@ -14,6 +17,8 @@ import static org.lwjgl.opengl.GL11.*;
 public abstract class Application {
     private final Window window;
     private static boolean running = true;
+    @Getter
+    private static final LayerStack m_LayerStack = new LayerStack();
 
     public Application() {
         window = LinuxWindow.get();
@@ -25,15 +30,31 @@ public abstract class Application {
             GL.createCapabilities();
             glClearColor(1, 0, 1, 1);
             glClear(GL_COLOR_BUFFER_BIT);
+
+            for (Layer layer : m_LayerStack)
+                layer.OnUpdate();
+
             window.OnUpdate();
         }
         window.Shutdown();
     }
 
     private static void onEvent(Event e) {
-        HB_CORE_TRACE(e);
         EventDispatcher dispatcher = new EventDispatcher(e);
         dispatcher.Dispatch(Application::onWindowClose, EventType.WindowClose);
+
+        for (int i = m_LayerStack.end(); i >= m_LayerStack.begin(); i--) {
+            m_LayerStack.get(i).OnEvent(e);
+            if (e.isM_Handled()) break;
+        }
+    }
+
+    public void pushLayer(Layer layer) {
+        m_LayerStack.PushLayer(layer);
+    }
+
+    public void pushOverlay(Layer layer) {
+        m_LayerStack.PushOverlay(layer);
     }
 
     private static boolean onWindowClose(WindowCloseEvent e) {

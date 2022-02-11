@@ -1,4 +1,4 @@
-package com.chernobyl.gameengine.events.enums;
+package com.chernobyl.gameengine.event.enums;
 
 public enum EventType {
     None(0),

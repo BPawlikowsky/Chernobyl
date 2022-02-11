@@ -1,9 +1,7 @@
-package com.chernobyl.gameengine.events;
+package com.chernobyl.gameengine.event;
 
-import com.chernobyl.gameengine.events.enums.EventCategory;
-
-import static com.chernobyl.gameengine.events.enums.EventCategory.EventCategoryInput;
-import static com.chernobyl.gameengine.events.enums.EventCategory.EventCategoryKeyboard;
+import static com.chernobyl.gameengine.event.enums.EventCategory.EventCategoryInput;
+import static com.chernobyl.gameengine.event.enums.EventCategory.EventCategoryKeyboard;
 
 public abstract class KeyEvent extends Event {
     protected int keyCode;
