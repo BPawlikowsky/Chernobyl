@@ -1,7 +1,9 @@
 package com.chernobyl.client;
 
+import com.chernobyl.gameengine.Application;
 import com.chernobyl.gameengine.EntryPoint;
 import com.chernobyl.gameengine.event.Event;
+import com.chernobyl.gameengine.layer.ImGuiLayer;
 import com.chernobyl.gameengine.layer.Layer;
 
 import static com.chernobyl.gameengine.Log.HB_INFO;
@@ -9,9 +11,11 @@ import static com.chernobyl.gameengine.Log.HB_TRACE;
 
 public class App {
     public static void main(String[] args) {
-        Client client = Client.Create();
-        EntryPoint<Client> ep = new EntryPoint<>(client);
-        client.pushOverlay(new ExampleLayer());
+        Application client = Application.get();
+        EntryPoint<Application> ep = new EntryPoint<>(client);
+        client.pushLayer(new ExampleLayer());
+        client.pushOverlay(new ImGuiLayer());
+
         ep.main(args);
     }
 }
@@ -22,7 +26,7 @@ class ExampleLayer extends Layer {
     }
 
     @Override
-    protected void OnAttach() {
+    public void OnAttach() {
 
     }
 

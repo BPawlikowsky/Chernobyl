@@ -2,6 +2,7 @@ package com.chernobyl.gameengine.window;
 
 import com.chernobyl.gameengine.event.*;
 import org.lwjgl.glfw.GLFWErrorCallback;
+import org.lwjgl.opengl.GL;
 
 import static com.chernobyl.gameengine.Asserts.HB_CORE_ASSERT;
 import static com.chernobyl.gameengine.Log.HB_CORE_ERROR;
@@ -11,7 +12,6 @@ import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class LinuxWindow extends Window{
-    private long glfwWindow;
     private boolean vSync;
     public IEventCallback eventCallback;
     static boolean s_GLFWInitialized = false;
@@ -66,15 +66,15 @@ public class LinuxWindow extends Window{
             s_GLFWInitialized = true;
         }
 
-        glfwWindow = glfwCreateWindow(this.width, this.height, this.title, NULL, NULL);
+        nativeWindow = glfwCreateWindow(this.width, this.height, this.title, NULL, NULL);
 
-        HB_CORE_ASSERT(glfwWindow != NULL, "Could not create GLFW window.");
+        HB_CORE_ASSERT(nativeWindow != NULL, "Could not create GLFW window.");
 
-        glfwMakeContextCurrent(glfwWindow);
+        glfwMakeContextCurrent(nativeWindow);
         SetVSync(true);
 
         // Set GLFW callbacks
-        glfwSetWindowSizeCallback(glfwWindow, (long window, int width, int height) ->
+        glfwSetWindowSizeCallback(nativeWindow, (long window, int width, int height) ->
         {
             this.width = width;
             this.height = height;
@@ -83,14 +83,14 @@ public class LinuxWindow extends Window{
             eventCallback.invoke(event);
         });
 
-        glfwSetWindowCloseCallback(glfwWindow, (long window) ->
+        glfwSetWindowCloseCallback(nativeWindow, (long window) ->
         {
             
             WindowCloseEvent event = new WindowCloseEvent();
             eventCallback.invoke(event);
         });
 
-        glfwSetKeyCallback(glfwWindow, (long window, int key, int scancode, int action, int mods) ->
+        glfwSetKeyCallback(nativeWindow, (long window, int key, int scancode, int action, int mods) ->
         {
             
 
@@ -117,7 +117,7 @@ public class LinuxWindow extends Window{
             }
         });
 
-        glfwSetMouseButtonCallback(glfwWindow, (long window, int button, int action, int mods) ->
+        glfwSetMouseButtonCallback(nativeWindow, (long window, int button, int action, int mods) ->
         {
             switch (action)
             {
@@ -136,24 +136,25 @@ public class LinuxWindow extends Window{
             }
         });
 
-        glfwSetScrollCallback(glfwWindow, (long window, double xOffset, double yOffset) ->
+        glfwSetScrollCallback(nativeWindow, (long window, double xOffset, double yOffset) ->
         {
             MouseScrolledEvent event = new MouseScrolledEvent((float)xOffset, (float)yOffset);
             eventCallback.invoke(event);
         });
 
-        glfwSetCursorPosCallback(glfwWindow, (long window, double xPos, double yPos) ->
+        glfwSetCursorPosCallback(nativeWindow, (long window, double xPos, double yPos) ->
         {
             MouseMovedEvent event = new MouseMovedEvent((float)xPos, (float)yPos);
             eventCallback.invoke(event);
         });
+        GL.createCapabilities();
     }
 
     public void Shutdown()
     {
         // Free the window callbacks and destroy the window
-        glfwFreeCallbacks(glfwWindow);
-        glfwDestroyWindow(glfwWindow);
+        glfwFreeCallbacks(nativeWindow);
+        glfwDestroyWindow(nativeWindow);
 
         // Terminate GLFW and free the error callback
         glfwTerminate();
@@ -164,7 +165,7 @@ public class LinuxWindow extends Window{
     @Override
     public void OnUpdate() {
         glfwPollEvents();
-        glfwSwapBuffers(glfwWindow);
+        glfwSwapBuffers(nativeWindow);
     }
 
     @Override

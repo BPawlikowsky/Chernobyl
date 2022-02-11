@@ -11,18 +11,28 @@ import com.chernobyl.gameengine.window.Window;
 import lombok.Getter;
 import org.lwjgl.opengl.GL;
 
-import static com.chernobyl.gameengine.Log.HB_CORE_TRACE;
+import static com.chernobyl.gameengine.Asserts.HB_CORE_ASSERT;
 import static org.lwjgl.opengl.GL11.*;
 
-public abstract class Application {
-    private final Window window;
+public class Application {
+    @Getter
+    private static Window window = null;
+    private static Application application = null;
     private static boolean running = true;
     @Getter
     private static final LayerStack m_LayerStack = new LayerStack();
 
     public Application() {
+        HB_CORE_ASSERT(application != null, "Application already exists!");
         window = LinuxWindow.get();
         window.SetEventCallback(Application::onEvent);
+    }
+
+    public static Application get() {
+        if(application == null) {
+            application = new Application();
+        }
+        return application;
     }
 
     public void Run() {
@@ -51,10 +61,12 @@ public abstract class Application {
 
     public void pushLayer(Layer layer) {
         m_LayerStack.PushLayer(layer);
+        layer.OnAttach();
     }
 
     public void pushOverlay(Layer layer) {
         m_LayerStack.PushOverlay(layer);
+        layer.OnAttach();
     }
 
     private static boolean onWindowClose(WindowCloseEvent e) {

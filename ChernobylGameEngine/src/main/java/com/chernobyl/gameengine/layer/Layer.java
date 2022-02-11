@@ -13,7 +13,7 @@ public abstract class Layer {
         m_DebugName = name;
     }
 
-    protected abstract void OnAttach();
+    public abstract void OnAttach();
 
     public abstract void OnDetach();
 

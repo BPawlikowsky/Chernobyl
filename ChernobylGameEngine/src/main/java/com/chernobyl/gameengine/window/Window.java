@@ -4,6 +4,8 @@ import lombok.Getter;
 
 public abstract class Window {
     @Getter
+    protected long nativeWindow;
+    @Getter
     protected String title;
     @Getter
     protected int width, height;
