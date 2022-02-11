@@ -9,7 +9,6 @@ import imgui.flag.ImGuiKey;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
 import imgui.internal.ImGuiContext;
-import imgui.lwjgl3.glfw.ImGuiImplGlfwNative;
 import imgui.type.ImBoolean;
 
 import static org.lwjgl.glfw.GLFW.*;
