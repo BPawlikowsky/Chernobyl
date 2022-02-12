@@ -13,9 +13,5 @@ public enum EventType {
         value = i;
     }
 
-    EventType() {
-        value = this.ordinal();
-    }
-
     public int getValue() { return value; }
 }
