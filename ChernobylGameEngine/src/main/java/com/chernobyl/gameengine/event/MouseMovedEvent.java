@@ -8,13 +8,13 @@ import static com.chernobyl.gameengine.event.enums.EventCategory.EventCategoryMo
 
 public class MouseMovedEvent extends Event{
     @Getter
-    private final float mouseX;
+    private final float x;
     @Getter
-    private final float mouseY;
+    private final float y;
 
-    public MouseMovedEvent(float mouseX, float mouseY) {
-        this.mouseX = mouseX;
-        this.mouseY = mouseY;
+    public MouseMovedEvent(float x, float y) {
+        this.x = x;
+        this.y = y;
     }
 
     @Override
@@ -30,8 +30,8 @@ public class MouseMovedEvent extends Event{
     @Override
     public String toString() {
         return "MouseMovedEvent{" +
-                "mouseX=" + mouseX +
-                ", mouseY=" + mouseY +
+                "mouseX=" + x +
+                ", mouseY=" + y +
                 '}';
     }
 }

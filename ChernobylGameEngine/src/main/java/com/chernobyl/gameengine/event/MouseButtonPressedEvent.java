@@ -15,7 +15,7 @@ public class MouseButtonPressedEvent extends MouseButtonEvent{
     @Override
     public String toString() {
         return "MouseButtonPressedEvent{" +
-                "button=" + button +
+                "button=" + mouseButton +
                 '}';
     }
 }

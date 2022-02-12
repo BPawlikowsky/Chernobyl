@@ -7,10 +7,10 @@ import static com.chernobyl.gameengine.event.enums.EventCategory.EventCategoryMo
 
 public abstract class MouseButtonEvent extends Event{
     @Getter
-    protected int button;
+    protected int mouseButton;
 
-    public MouseButtonEvent(int button) {
-        this.button = button;
+    public MouseButtonEvent(int mouseButton) {
+        this.mouseButton = mouseButton;
     }
 
     @Override

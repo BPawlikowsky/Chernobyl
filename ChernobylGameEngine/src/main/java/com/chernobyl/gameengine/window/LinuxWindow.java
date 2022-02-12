@@ -33,19 +33,19 @@ public class LinuxWindow extends Window{
 
 
     public static Window get() {
-        if(Window.window == null) {
-            Window.window = new LinuxWindow();
+        if(Window.m_Window == null) {
+            Window.m_Window = new LinuxWindow();
         }
 
-        return Window.window;
+        return Window.m_Window;
     }
 
     public static Window get(WindowProps windowProps) {
-        if(Window.window == null) {
-            Window.window = new LinuxWindow(windowProps);
+        if(Window.m_Window == null) {
+            Window.m_Window = new LinuxWindow(windowProps);
         }
 
-        return Window.window;
+        return Window.m_Window;
     }
 
     private void glfwErrorCallback(int err, long desc) {
@@ -115,6 +115,12 @@ public class LinuxWindow extends Window{
                     break;
                 }
             }
+        });
+
+        glfwSetCharCallback(nativeWindow, (long m_Window, int keycode) ->
+        {
+            KeyTypedEvent event = new KeyTypedEvent(keycode);
+            eventCallback.invoke(event);
         });
 
         glfwSetMouseButtonCallback(nativeWindow, (long window, int button, int action, int mods) ->

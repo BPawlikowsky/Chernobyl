@@ -1,7 +1,8 @@
 package com.chernobyl.gameengine.layer;
 
 import com.chernobyl.gameengine.Application;
-import com.chernobyl.gameengine.event.Event;
+import com.chernobyl.gameengine.event.*;
+import com.chernobyl.gameengine.event.enums.EventType;
 import imgui.ImGui;
 import imgui.ImGuiIO;
 import imgui.flag.ImGuiBackendFlags;
@@ -12,6 +13,7 @@ import imgui.internal.ImGuiContext;
 import imgui.type.ImBoolean;
 
 import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.opengl.GL11.glViewport;
 
 public class ImGuiLayer extends Layer {
     private float m_Time = 0.0f;
@@ -92,5 +94,72 @@ public class ImGuiLayer extends Layer {
     @Override
     public void OnEvent(Event event) {
 
+        EventDispatcher dispatcher = new EventDispatcher(event);
+        dispatcher.Dispatch(ImGuiLayer::OnMouseButtonPressedEvent, EventType.MouseButtonPressed);
+        dispatcher.Dispatch(ImGuiLayer::OnMouseButtonReleasedEvent, EventType.MouseButtonReleased);
+        dispatcher.Dispatch(ImGuiLayer::OnMouseMovedEvent, EventType.MouseMoved);
+        dispatcher.Dispatch(ImGuiLayer::OnMouseScrolledEvent, EventType.MouseScrolled);
+        dispatcher.Dispatch(ImGuiLayer::OnKeyPressedEvent, EventType.KeyPressed);
+        dispatcher.Dispatch(ImGuiLayer::OnKeyTypedEvent, EventType.KeyTyped);
+        dispatcher.Dispatch(ImGuiLayer::OnKeyReleasedEvent, EventType.KeyReleased);
+        dispatcher.Dispatch(ImGuiLayer::OnWindowResizeEvent, EventType.WindowResize);
+    }
+
+    private static boolean OnWindowResizeEvent(WindowResizeEvent e) {
+        ImGuiIO io = ImGui.getIO();
+        io.setDisplaySize(e.getWidth(), e.getHeight());
+        io.setDisplayFramebufferScale(1.0f, 1.0f);
+        glViewport(0, 0, e.getWidth(), e.getHeight());
+        return false;
+    }
+
+    private static boolean OnKeyReleasedEvent(KeyReleasedEvent e) {
+        ImGuiIO io = ImGui.getIO();
+        io.setKeysDown(e.GetKeyCode(), false);
+        return false;
+    }
+
+    private static boolean OnKeyTypedEvent(KeyTypedEvent e) {
+    ImGuiIO io = ImGui.getIO();
+    int keycode = e.GetKeyCode();
+		if (keycode > 0 && keycode < 0x10000)
+            io.addInputCharacter(keycode);
+        return false;
+    }
+
+    private static boolean OnKeyPressedEvent(KeyPressedEvent e) {
+        ImGuiIO io = ImGui.getIO();
+        io.setKeysDown(e.GetKeyCode(), true);
+
+        io.setKeyCtrl(io.getKeysDown(GLFW_KEY_LEFT_CONTROL) || io.getKeysDown(GLFW_KEY_RIGHT_CONTROL));
+        io.setKeyShift(io.getKeysDown(GLFW_KEY_LEFT_SHIFT) || io.getKeysDown(GLFW_KEY_RIGHT_SHIFT));
+        io.setKeyAlt(io.getKeysDown(GLFW_KEY_LEFT_ALT) || io.getKeysDown(GLFW_KEY_RIGHT_ALT));
+        io.setKeySuper(io.getKeysDown(GLFW_KEY_LEFT_SUPER) || io.getKeysDown(GLFW_KEY_RIGHT_SUPER));
+        return false;
+    }
+
+    private static boolean OnMouseScrolledEvent(MouseScrolledEvent e) {
+        ImGuiIO io = ImGui.getIO();
+        io.setMouseWheelH(io.getMouseWheelH() + e.getXOffset());
+        io.setMouseWheel(io.getMouseWheel() + e.getYOffset());
+        return false;
+    }
+
+    private static boolean OnMouseMovedEvent(MouseMovedEvent e) {
+        ImGuiIO io = ImGui.getIO();
+        io.setMousePos(e.getX(), e.getY());
+        return false;
+    }
+
+    private static boolean OnMouseButtonReleasedEvent(MouseButtonReleasedEvent e) {
+        ImGuiIO io = ImGui.getIO();
+        io.setMouseDown(e.getMouseButton(), false);
+        return false;
+    }
+
+    private static boolean OnMouseButtonPressedEvent(MouseButtonPressedEvent e) {
+        ImGuiIO io = ImGui.getIO();
+        io.setMouseDown(e.getMouseButton(), true);
+        return false;
     }
 }

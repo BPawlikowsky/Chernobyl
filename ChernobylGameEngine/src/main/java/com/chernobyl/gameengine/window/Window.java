@@ -9,7 +9,7 @@ public abstract class Window {
     protected String title;
     @Getter
     protected int width, height;
-    protected static Window window = null;
+    protected static Window m_Window = null;
     public abstract void OnUpdate();
     public abstract void Shutdown();
 
