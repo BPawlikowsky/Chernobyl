@@ -18,12 +18,11 @@ import static org.lwjgl.opengl.GL11.glViewport;
 public class ImGuiLayer extends Layer {
     private float m_Time = 0.0f;
     private final ImGuiImplGl3 imGuiImplGl3;
-    private final ImGuiImplGlfw imGuiImplGlfw;
+//    private final ImGuiImplGlfw imGuiImplGlfw;
 
     public ImGuiLayer() {
         super("ImGuiLayer");
         imGuiImplGl3 = new ImGuiImplGl3();
-        imGuiImplGlfw = new ImGuiImplGlfw();
     }
 
 
@@ -32,7 +31,6 @@ public class ImGuiLayer extends Layer {
         ImGuiContext ctx = ImGui.createContext();
         ImGui.setCurrentContext(ctx);
         ImGui.styleColorsDark();
-        imGuiImplGlfw.init(Application.getWindow().getNativeWindow(), true);
         imGuiImplGl3.init("#version 130");
 
         ImGuiIO io = ImGui.getIO();
@@ -67,7 +65,6 @@ public class ImGuiLayer extends Layer {
     @Override
     public void OnDetach() {
         imGuiImplGl3.dispose();
-        imGuiImplGlfw.dispose();
         ImGui.destroyContext();
     }
 
@@ -80,7 +77,6 @@ public class ImGuiLayer extends Layer {
         io.setDeltaTime(m_Time > 0.0f ? (time - m_Time) : (1.0f / 60.0f));
         m_Time = time;
 
-        imGuiImplGlfw.newFrame();
         imGuiImplGl3.updateFontsTexture();
         ImGui.newFrame();
 
@@ -122,7 +118,7 @@ public class ImGuiLayer extends Layer {
     private static boolean OnKeyTypedEvent(KeyTypedEvent e) {
     ImGuiIO io = ImGui.getIO();
     int keycode = e.GetKeyCode();
-		if (keycode > 0 && keycode < 0x10000)
+		if (keycode > 0 && keycode < 0x10000000)
             io.addInputCharacter(keycode);
         return false;
     }

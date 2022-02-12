@@ -116,8 +116,7 @@ public class LinuxWindow extends Window{
                 }
             }
         });
-
-        glfwSetCharCallback(nativeWindow, (long m_Window, int keycode) ->
+        glfwSetCharCallback(nativeWindow, (long window, int keycode) ->
         {
             KeyTypedEvent event = new KeyTypedEvent(keycode);
             eventCallback.invoke(event);
