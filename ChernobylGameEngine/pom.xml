@@ -13,6 +13,7 @@
         <maven.compiler.target>11</maven.compiler.target>
         <lwjgl.version>3.3.0</lwjgl.version>
         <lwjgl.natives>natives-linux</lwjgl.natives>
+        <joml.version>1.10.3</joml.version>
     </properties>
 
     <dependencyManagement>
@@ -105,6 +106,11 @@
             <groupId>io.github.spair</groupId>
             <artifactId>imgui-java-natives-linux</artifactId>
             <version>1.86.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.joml</groupId>
+            <artifactId>joml</artifactId>
+            <version>${joml.version}</version>
         </dependency>
     </dependencies>
 
