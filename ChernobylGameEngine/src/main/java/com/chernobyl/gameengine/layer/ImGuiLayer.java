@@ -30,7 +30,7 @@ public class ImGuiLayer extends Layer {
 
     @Override
     public void OnAttach() {
-        HB_CORE_INFO(ImGui.getVersion());
+        HB_CORE_INFO("ImGui version {0}", ImGui.getVersion());
         ImGuiContext ctx = ImGui.createContext();
         ImGui.setCurrentContext(ctx);
         long window = Application.getWindow().getNativeWindow();
@@ -54,7 +54,7 @@ public class ImGuiLayer extends Layer {
             style.setColor(ImGuiCol.WindowBg, windowColor.x, windowColor.y, windowColor.z, 1.0f);
         }
         imGuiImplGlfw.init(window, true);
-        imGuiImplGl3.init("#version 330 core");
+        imGuiImplGl3.init("#version 410");
     }
 
     public void Begin()

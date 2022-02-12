@@ -25,7 +25,7 @@ public class Application {
     private final ImGuiLayer m_ImGuiLayer;
 
     public Application() {
-        HB_CORE_ASSERT(application != null, "Application already exists!");
+        HB_CORE_ASSERT(application == null, "Application already exists!");
         window = LinuxWindow.get();
         window.SetEventCallback(Application::onEvent);
         m_ImGuiLayer = new ImGuiLayer();
