@@ -1,7 +1,5 @@
 package com.chernobyl.gameengine;
 
-import java.lang.annotation.Native;
-
 import static com.chernobyl.gameengine.Log.HB_CORE_ERROR;
 import static com.chernobyl.gameengine.Log.HB_ERROR;
 

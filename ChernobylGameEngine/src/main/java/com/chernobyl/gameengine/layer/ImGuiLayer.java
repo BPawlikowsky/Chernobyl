@@ -8,7 +8,6 @@ import imgui.ImGuiIO;
 import imgui.flag.ImGuiBackendFlags;
 import imgui.flag.ImGuiKey;
 import imgui.gl3.ImGuiImplGl3;
-import imgui.glfw.ImGuiImplGlfw;
 import imgui.internal.ImGuiContext;
 import imgui.type.ImBoolean;
 

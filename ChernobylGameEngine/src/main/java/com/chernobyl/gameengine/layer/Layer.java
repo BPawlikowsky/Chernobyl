@@ -3,7 +3,7 @@ package com.chernobyl.gameengine.layer;
 import com.chernobyl.gameengine.event.Event;
 
 public abstract class Layer {
-    protected String m_DebugName;
+    final protected String m_DebugName;
 
     public Layer() {
         m_DebugName = "Layer";

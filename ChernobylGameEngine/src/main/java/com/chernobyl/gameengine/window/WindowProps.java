@@ -4,11 +4,11 @@ import lombok.Getter;
 
 public class WindowProps {
     @Getter
-    String title;
+    final String title;
     @Getter
-    int width;
+    final int width;
     @Getter
-    int height;
+    final int height;
 
     public WindowProps() {
         title = "Chernobyl Engine";

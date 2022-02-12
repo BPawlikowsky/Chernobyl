@@ -7,7 +7,6 @@ import com.chernobyl.gameengine.layer.ImGuiLayer;
 import com.chernobyl.gameengine.layer.Layer;
 
 import static com.chernobyl.gameengine.Log.HB_INFO;
-import static com.chernobyl.gameengine.Log.HB_TRACE;
 
 public class App {
     public static void main(String[] args) {

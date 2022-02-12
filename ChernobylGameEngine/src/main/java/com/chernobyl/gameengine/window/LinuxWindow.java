@@ -60,7 +60,7 @@ public class LinuxWindow extends Window{
         {
             // TODO: glfwTerminate on system shutdown
             boolean success = glfwInit();
-            HB_CORE_ASSERT(success, "Could not intialize GLFW!");
+            HB_CORE_ASSERT(success, "Could not initialize GLFW!");
             glfwSetErrorCallback(this::glfwErrorCallback);
 
             s_GLFWInitialized = true;

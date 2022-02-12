@@ -1,9 +1,7 @@
 package com.chernobyl.gameengine;
 
-import static com.chernobyl.gameengine.Log.*;
-
 public class EntryPoint<T extends Application> {
-    T client;
+    final T client;
     public EntryPoint(T o) {
         this.client = o;
     }

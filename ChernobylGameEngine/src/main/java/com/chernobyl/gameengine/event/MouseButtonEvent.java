@@ -7,7 +7,7 @@ import static com.chernobyl.gameengine.event.enums.EventCategory.EventCategoryMo
 
 public abstract class MouseButtonEvent extends Event{
     @Getter
-    protected int mouseButton;
+    final protected int mouseButton;
 
     public MouseButtonEvent(int mouseButton) {
         this.mouseButton = mouseButton;

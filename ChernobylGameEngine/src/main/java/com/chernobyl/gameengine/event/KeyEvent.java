@@ -4,7 +4,7 @@ import static com.chernobyl.gameengine.event.enums.EventCategory.EventCategoryIn
 import static com.chernobyl.gameengine.event.enums.EventCategory.EventCategoryKeyboard;
 
 public abstract class KeyEvent extends Event {
-    protected int keyCode;
+    final protected int keyCode;
 
     public KeyEvent(int keyCode) {
         this.keyCode = keyCode;
