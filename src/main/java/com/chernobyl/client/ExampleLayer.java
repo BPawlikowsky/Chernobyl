@@ -6,9 +6,9 @@ import com.chernobyl.gameengine.event.KeyPressedEvent;
 import com.chernobyl.gameengine.event.enums.EventType;
 import com.chernobyl.gameengine.input.Input;
 import com.chernobyl.gameengine.layer.Layer;
+import imgui.ImGui;
 
 import static com.chernobyl.gameengine.Log.HB_TRACE;
-import static com.chernobyl.gameengine.event.enums.EventType.KeyPressed;
 import static com.chernobyl.gameengine.input.KeyCodes.HB_KEY_TAB;
 
 class ExampleLayer extends Layer {
@@ -30,6 +30,13 @@ class ExampleLayer extends Layer {
     public void OnUpdate() {
         if (Input.IsKeyPressed(HB_KEY_TAB))
             HB_TRACE("Tab key is pressed (poll)!");
+    }
+
+    @Override
+    public void OnImGuiRender() {
+        ImGui.begin("Test");
+        ImGui.text("Hello World");
+        ImGui.end();
     }
 
     @Override

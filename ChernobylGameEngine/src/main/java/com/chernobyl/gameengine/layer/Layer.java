@@ -19,6 +19,8 @@ public abstract class Layer {
 
     public abstract void OnUpdate();
 
+    public abstract void OnImGuiRender();
+
     public abstract void OnEvent(Event event);
 
     String GetName() {

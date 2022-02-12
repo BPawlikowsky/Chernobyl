@@ -4,6 +4,7 @@ import com.chernobyl.gameengine.event.Event;
 import com.chernobyl.gameengine.event.EventDispatcher;
 import com.chernobyl.gameengine.event.WindowCloseEvent;
 import com.chernobyl.gameengine.event.enums.EventType;
+import com.chernobyl.gameengine.layer.ImGuiLayer;
 import com.chernobyl.gameengine.layer.Layer;
 import com.chernobyl.gameengine.layer.LayerStack;
 import com.chernobyl.gameengine.window.LinuxWindow;
@@ -21,11 +22,14 @@ public class Application {
     private static boolean running = true;
     @Getter
     private static final LayerStack m_LayerStack = new LayerStack();
+    private final ImGuiLayer m_ImGuiLayer;
 
     public Application() {
         HB_CORE_ASSERT(application != null, "Application already exists!");
         window = LinuxWindow.get();
         window.SetEventCallback(Application::onEvent);
+        m_ImGuiLayer = new ImGuiLayer();
+        pushOverlay(m_ImGuiLayer);
     }
 
     public static Application get() {
@@ -43,6 +47,11 @@ public class Application {
 
             for (Layer layer : m_LayerStack)
                 layer.OnUpdate();
+
+            m_ImGuiLayer.Begin();
+            for (Layer layer : m_LayerStack)
+                layer.OnImGuiRender();
+            m_ImGuiLayer.End();
 
             window.OnUpdate();
         }

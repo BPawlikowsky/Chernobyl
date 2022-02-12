@@ -12,21 +12,21 @@ public class LayerStack implements Iterable<Layer>{
     public int begin() { return 0; }
     public int end() { return m_Layers.size() - 1; }
     private final Vector<Layer> m_Layers;
-    private int m_LayerInsert;
-    private final int layerSize = 10;
+    private int m_LayerInsertIndex;
+    private static final int LAYER_SIZE = 10;
 
 
     public LayerStack()
     {
-        m_Layers = new Vector<>(layerSize);
-        m_LayerInsert = 0;
+        m_Layers = new Vector<>(LAYER_SIZE);
+        m_LayerInsertIndex = 0;
     }
 
     public void PushLayer(Layer layer)
     {
         if(m_Layers.size() == 0) m_Layers.addElement(layer);
-        else m_Layers.insertElementAt(layer, m_LayerInsert);
-        m_LayerInsert++;
+        else m_Layers.insertElementAt(layer, m_LayerInsertIndex);
+        m_LayerInsertIndex++;
     }
 
     public void PushOverlay(Layer overlay)
@@ -41,7 +41,7 @@ public class LayerStack implements Iterable<Layer>{
         {
             boolean success = m_Layers.remove(layer);
             HB_CORE_ASSERT(success, "Could not remove layer");
-            m_LayerInsert--;
+            m_LayerInsertIndex--;
         }
     }
 
