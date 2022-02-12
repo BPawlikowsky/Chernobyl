@@ -70,12 +70,10 @@ public class Application {
 
     public void pushLayer(Layer layer) {
         m_LayerStack.PushLayer(layer);
-        layer.OnAttach();
     }
 
-    public void pushOverlay(Layer layer) {
-        m_LayerStack.PushOverlay(layer);
-        layer.OnAttach();
+    public void pushOverlay(Layer overlay) {
+        m_LayerStack.PushOverlay(overlay);
     }
 
     private static boolean onWindowClose(WindowCloseEvent e) {

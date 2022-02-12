@@ -26,12 +26,14 @@ public class LayerStack implements Iterable<Layer>{
     {
         if(m_Layers.size() == 0) m_Layers.addElement(layer);
         else m_Layers.insertElementAt(layer, m_LayerInsertIndex);
+        layer.OnAttach();
         m_LayerInsertIndex++;
     }
 
     public void PushOverlay(Layer overlay)
     {
         m_Layers.addElement(overlay);
+        overlay.OnAttach();
     }
 
     public void PopLayer(Layer layer)
@@ -42,14 +44,17 @@ public class LayerStack implements Iterable<Layer>{
             boolean success = m_Layers.remove(layer);
             HB_CORE_ASSERT(success, "Could not remove layer");
             m_LayerInsertIndex--;
+            layer.OnDetach();
         }
     }
 
     public void PopOverlay(Layer overlay)
     {
         int it = m_Layers.indexOf(overlay);
-        if (it != end())
+        if (it != end()) {
             m_Layers.remove(it);
+            overlay.OnDetach();
+        }
     }
 
     public Layer get(int index) {
