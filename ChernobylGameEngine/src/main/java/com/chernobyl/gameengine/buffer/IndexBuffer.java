@@ -18,4 +18,6 @@ public abstract class IndexBuffer {
         HB_CORE_ASSERT(false, "Unknown RendererAPI!");
         return null;
     }
+
+    public abstract int getM_Count();
 }

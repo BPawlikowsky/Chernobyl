@@ -1,14 +1,9 @@
 package com.chernobyl.gameengine;
 
-import com.chernobyl.gameengine.buffer.IndexBuffer;
-import com.chernobyl.gameengine.buffer.VertexBuffer;
-import com.chernobyl.gameengine.event.Event;
-import com.chernobyl.gameengine.event.EventDispatcher;
-import com.chernobyl.gameengine.event.WindowCloseEvent;
+import com.chernobyl.gameengine.buffer.*;
+import com.chernobyl.gameengine.event.*;
+import com.chernobyl.gameengine.layer.*;
 import com.chernobyl.gameengine.event.enums.EventType;
-import com.chernobyl.gameengine.layer.ImGuiLayer;
-import com.chernobyl.gameengine.layer.Layer;
-import com.chernobyl.gameengine.layer.LayerStack;
 import com.chernobyl.gameengine.render.Shader;
 import com.chernobyl.platform.linux.LinuxWindow;
 import com.chernobyl.gameengine.window.Window;
@@ -54,7 +49,6 @@ public class Application {
         };
 
         m_VertexBuffer = VertexBuffer.Create(vertices, vertices.length);
-
 
         glEnableVertexAttribArray(0);
         glVertexAttribPointer(0, 3, GL_FLOAT, false, TIGHT_STRIDE, NULL);
@@ -102,7 +96,7 @@ public class Application {
             m_Shader.Bind();
 
             glBindVertexArray(m_VertexArray);
-            glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, NULL);
+            glDrawElements(GL_TRIANGLES, m_IndexBuffer.getM_Count(), GL_UNSIGNED_INT, NULL);
 
             HB_CORE_ASSERT(glGetError() == GL_NO_ERROR, "GL Error has occured!");
 

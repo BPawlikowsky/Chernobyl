@@ -1,13 +1,15 @@
 package com.chernobyl.platform.opengl.openglbuffer;
 
 import com.chernobyl.gameengine.buffer.VertexBuffer;
+import lombok.Getter;
 
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL45.glCreateBuffers;
 
 public class OpenGLVertexBuffer extends VertexBuffer {
     private final int m_RendererID;
-    private int m_Count;
+    @Getter
+    protected int m_Count;
 
     public OpenGLVertexBuffer(float[] vertices, int size) {
         super();
