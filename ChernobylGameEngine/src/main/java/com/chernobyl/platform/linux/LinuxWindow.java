@@ -1,13 +1,12 @@
 package com.chernobyl.platform.linux;
 
 import com.chernobyl.gameengine.event.*;
-import com.chernobyl.gameengine.renderer.GraphicsContext;
+import com.chernobyl.gameengine.render.GraphicsContext;
 import com.chernobyl.gameengine.window.IEventCallback;
 import com.chernobyl.gameengine.window.Window;
 import com.chernobyl.gameengine.window.WindowProps;
 import com.chernobyl.platform.opengl.OpenGlContext;
 import org.lwjgl.glfw.GLFWErrorCallback;
-import org.lwjgl.opengl.GL;
 
 import static com.chernobyl.gameengine.Asserts.HB_CORE_ASSERT;
 import static com.chernobyl.gameengine.Log.HB_CORE_ERROR;

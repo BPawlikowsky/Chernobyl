@@ -1,6 +1,6 @@
 package com.chernobyl.platform.opengl;
 
-import com.chernobyl.gameengine.renderer.GraphicsContext;
+import com.chernobyl.gameengine.render.GraphicsContext;
 import org.lwjgl.opengl.GL;
 
 import static com.chernobyl.gameengine.Asserts.HB_CORE_ASSERT;

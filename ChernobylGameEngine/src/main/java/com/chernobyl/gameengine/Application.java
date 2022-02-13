@@ -66,7 +66,26 @@ public class Application {
         int[] indices = { 0, 1, 2 };
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices, GL_STATIC_DRAW);
 
-        HB_CORE_ASSERT(glGetError() == GL_NO_ERROR, "GL Error has occured!");
+                        layout(location = 0) in vec3 a_Position;
+                        out vec3 v_Position;
+                        void main()
+                        {
+                            v_Position = a_Position;
+                            gl_Position = vec4(a_Position, 1.0);
+                        }
+        """;
+        String fragmentSrc = """
+                            #version 330 core
+
+                        layout(location = 0) out vec4 color;
+                        in vec3 v_Position;
+                        void main()
+                        {
+                            color = vec4(v_Position * 0.5 + 0.5, 1.0);
+                        }
+        """;
+
+        m_Shader = new Shader(vertexSrc, fragmentSrc);
     }
 
     public static Application get() {
