@@ -15,6 +15,6 @@ public abstract class Window {
 
     // Window attributes
     public abstract void SetEventCallback(IEventCallback callback);
-    abstract void SetVSync(boolean enabled);
-    abstract boolean IsVSync();
+    public abstract void SetVSync(boolean enabled);
+    public abstract boolean IsVSync();
 }

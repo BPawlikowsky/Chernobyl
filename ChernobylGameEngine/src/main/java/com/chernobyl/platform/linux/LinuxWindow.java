@@ -1,6 +1,11 @@
-package com.chernobyl.gameengine.window;
+package com.chernobyl.platform.linux;
 
 import com.chernobyl.gameengine.event.*;
+import com.chernobyl.gameengine.renderer.GraphicsContext;
+import com.chernobyl.gameengine.window.IEventCallback;
+import com.chernobyl.gameengine.window.Window;
+import com.chernobyl.gameengine.window.WindowProps;
+import com.chernobyl.platform.opengl.OpenGlContext;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.GL;
 
@@ -11,23 +16,24 @@ import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
-public class LinuxWindow extends Window{
+public class LinuxWindow extends Window {
     private boolean vSync;
+    private GraphicsContext m_Context;
     public IEventCallback eventCallback;
     static boolean s_GLFWInitialized = false;
 
     private LinuxWindow(){
         WindowProps windowProps = new WindowProps();
-        this.width = windowProps.width;
-        this.height = windowProps.height;
-        this.title = windowProps.title;
+        this.width = windowProps.getWidth();
+        this.height = windowProps.getHeight();
+        this.title = windowProps.getTitle();
         Init();
     }
 
     private LinuxWindow(WindowProps windowProps){
-        this.width = windowProps.width;
-        this.height = windowProps.height;
-        this.title = windowProps.title;
+        this.width = windowProps.getWidth();
+        this.height = windowProps.getHeight();
+        this.title = windowProps.getTitle();
         Init();
     }
 
@@ -70,7 +76,9 @@ public class LinuxWindow extends Window{
 
         HB_CORE_ASSERT(nativeWindow != NULL, "Could not create GLFW window.");
 
-        glfwMakeContextCurrent(nativeWindow);
+        m_Context = new OpenGlContext(nativeWindow);
+        m_Context.Init();
+
         SetVSync(true);
 
         // Set GLFW callbacks
@@ -152,7 +160,6 @@ public class LinuxWindow extends Window{
             MouseMovedEvent event = new MouseMovedEvent((float)xPos, (float)yPos);
             eventCallback.invoke(event);
         });
-        GL.createCapabilities();
     }
 
     public void Shutdown()
@@ -170,7 +177,7 @@ public class LinuxWindow extends Window{
     @Override
     public void OnUpdate() {
         glfwPollEvents();
-        glfwSwapBuffers(nativeWindow);
+        m_Context.SwapBuffers();
     }
 
     @Override
@@ -179,7 +186,7 @@ public class LinuxWindow extends Window{
     }
 
     @Override
-    void SetVSync(boolean enabled) {
+    public void SetVSync(boolean enabled) {
         if (enabled)
             glfwSwapInterval(1);
         else
@@ -189,7 +196,7 @@ public class LinuxWindow extends Window{
     }
 
     @Override
-    boolean IsVSync() {
+    public boolean IsVSync() {
         return vSync;
     }
 }
