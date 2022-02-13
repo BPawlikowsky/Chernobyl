@@ -1,11 +1,14 @@
 package com.chernobyl.gameengine.buffer;
 
+import com.chernobyl.gameengine.render.BufferLayout;
 import com.chernobyl.gameengine.renderer.Renderer;
 import com.chernobyl.platform.opengl.openglbuffer.OpenGLVertexBuffer;
 
 import static com.chernobyl.gameengine.Asserts.HB_CORE_ASSERT;
 
 public abstract class VertexBuffer {
+    public abstract BufferLayout GetLayout();
+    public abstract void SetLayout(BufferLayout layout);
 
     public static VertexBuffer Create(float[] vertices, int size) {
         switch (Renderer.GetAPI()) {

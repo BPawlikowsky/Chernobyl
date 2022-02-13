@@ -1,6 +1,7 @@
 package com.chernobyl.platform.opengl.openglbuffer;
 
 import com.chernobyl.gameengine.buffer.VertexBuffer;
+import com.chernobyl.gameengine.render.BufferLayout;
 import lombok.Getter;
 
 import static org.lwjgl.opengl.GL15.*;
@@ -10,6 +11,7 @@ public class OpenGLVertexBuffer extends VertexBuffer {
     private final int m_RendererID;
     @Getter
     protected int m_Count;
+    private BufferLayout layout;
 
     public OpenGLVertexBuffer(float[] vertices, int size) {
         super();
@@ -28,5 +30,15 @@ public class OpenGLVertexBuffer extends VertexBuffer {
 
     void Unbind() {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
+    }
+
+    @Override
+    public BufferLayout GetLayout() {
+        return layout;
+    }
+
+    @Override
+    public void SetLayout(BufferLayout layout) {
+        this.layout = layout;
     }
 }
