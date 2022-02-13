@@ -1,5 +1,7 @@
 package com.chernobyl.gameengine;
 
+import com.chernobyl.gameengine.buffer.IndexBuffer;
+import com.chernobyl.gameengine.buffer.VertexBuffer;
 import com.chernobyl.gameengine.event.Event;
 import com.chernobyl.gameengine.event.EventDispatcher;
 import com.chernobyl.gameengine.event.WindowCloseEvent;
@@ -7,13 +9,13 @@ import com.chernobyl.gameengine.event.enums.EventType;
 import com.chernobyl.gameengine.layer.ImGuiLayer;
 import com.chernobyl.gameengine.layer.Layer;
 import com.chernobyl.gameengine.layer.LayerStack;
+import com.chernobyl.gameengine.render.Shader;
 import com.chernobyl.platform.linux.LinuxWindow;
 import com.chernobyl.gameengine.window.Window;
 import lombok.Getter;
 
 import static com.chernobyl.gameengine.Asserts.HB_CORE_ASSERT;
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
 import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
@@ -31,8 +33,9 @@ public class Application {
     private final ImGuiLayer m_ImGuiLayer;
 
     private final int m_VertexArray;
-    private final int m_VertexBuffer;
-    private final int m_IndexBuffer;
+    private final VertexBuffer m_VertexBuffer;
+    private final IndexBuffer m_IndexBuffer;
+    private final Shader m_Shader;
 
     public Application() {
         HB_CORE_ASSERT(application == null, "Application already exists!");
@@ -44,27 +47,23 @@ public class Application {
         m_VertexArray = glGenVertexArrays();
         glBindVertexArray(m_VertexArray);
 
-        m_VertexBuffer = glGenBuffers();
-        glBindBuffer(GL_ARRAY_BUFFER, m_VertexBuffer);
-
-        var vertices = new float[] {
+        var vertices = new float[]{
                 -0.5f, -0.5f, 0.0f,
                 0.5f, -0.5f, 0.0f,
                 0.0f, 0.5f, 0.0f
         };
 
-        glBufferData(GL_ARRAY_BUFFER, vertices, GL_STATIC_DRAW);
+        m_VertexBuffer = VertexBuffer.Create(vertices, vertices.length);
+
 
         glEnableVertexAttribArray(0);
         glVertexAttribPointer(0, 3, GL_FLOAT, false, TIGHT_STRIDE, NULL);
 
+        int[] indices = {0, 1, 2};
+        m_IndexBuffer = IndexBuffer.Create(indices, indices.length);
 
-        m_IndexBuffer = glGenBuffers();
-
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IndexBuffer);
-
-        int[] indices = { 0, 1, 2 };
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices, GL_STATIC_DRAW);
+        String vertexSrc = """
+                        #version 330 core
 
                         layout(location = 0) in vec3 a_Position;
                         out vec3 v_Position;
@@ -89,7 +88,7 @@ public class Application {
     }
 
     public static Application get() {
-        if(application == null) {
+        if (application == null) {
             application = new Application();
         }
         return application;
@@ -99,6 +98,8 @@ public class Application {
         while (running) {
             glClearColor(0.1f, 0.1f, 0.1f, 1);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+            m_Shader.Bind();
 
             glBindVertexArray(m_VertexArray);
             glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, NULL);
