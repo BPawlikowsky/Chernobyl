@@ -15,7 +15,6 @@ import lombok.Getter;
 
 import static com.chernobyl.gameengine.Asserts.HB_CORE_ASSERT;
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class Application {

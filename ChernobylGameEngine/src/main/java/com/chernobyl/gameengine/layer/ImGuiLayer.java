@@ -38,7 +38,7 @@ public class ImGuiLayer extends Layer {
 
         ImGuiIO io = ImGui.getIO();
         io.setConfigFlags(io.getConfigFlags() | ImGuiConfigFlags.NavEnableKeyboard);       // Enable Keyboard Controls
-        // io.setConfigFlags(io.getCofigFlags() | ImGuiConfigFlags.NavEnableGamepad);      // Enable Gamepad Controls
+        // io.setConfigFlags(io.getConfigFlags() | ImGuiConfigFlags.NavEnableGamepad);      // Enable Gamepad Controls
         io.setConfigFlags( io.getConfigFlags()| ImGuiConfigFlags.DockingEnable);           // Enable Docking
         io.setConfigFlags( io.getConfigFlags()| ImGuiConfigFlags.ViewportsEnable);         // Enable Multi-Viewport / Platform Windows
         // io.setConfigFlags( io.getConfigFlags()| ImGuiConfigFlags.ViewportsNoTaskBarIcons);

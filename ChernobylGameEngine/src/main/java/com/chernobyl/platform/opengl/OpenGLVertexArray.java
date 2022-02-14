@@ -8,8 +8,6 @@ import com.chernobyl.gameengine.renderer.VertexArray;
 import java.util.Vector;
 
 import static com.chernobyl.gameengine.Asserts.HB_CORE_ASSERT;
-import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
-import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
 import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.opengl.GL45.glCreateVertexArrays;
 
