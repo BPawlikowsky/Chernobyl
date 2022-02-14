@@ -6,6 +6,8 @@ import com.chernobyl.platform.opengl.openglbuffer.OpenGLIndexBuffer;
 import static com.chernobyl.gameengine.Asserts.HB_CORE_ASSERT;
 
 public abstract class IndexBuffer {
+    public abstract void Bind();
+    public abstract void Unbind();
     public static IndexBuffer Create(int[] indices, int size) {
         switch (Renderer.GetAPI()) {
             case None:
@@ -19,5 +21,5 @@ public abstract class IndexBuffer {
         return null;
     }
 
-    public abstract int getM_Count();
+    public abstract int getCount();
 }

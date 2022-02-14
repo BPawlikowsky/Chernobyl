@@ -17,7 +17,7 @@ public class OpenGLIndexBuffer extends IndexBuffer {
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices, GL_STATIC_DRAW);
     }
 
-    public int getM_Count() {
+    public int getCount() {
         return m_Count;
     }
 
@@ -25,11 +25,11 @@ public class OpenGLIndexBuffer extends IndexBuffer {
         glDeleteBuffers(m_RendererID);
     }
 
-    void Bind() {
+    public void Bind() {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID);
     }
 
-    void Unbind() {
+    public void Unbind() {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
 }

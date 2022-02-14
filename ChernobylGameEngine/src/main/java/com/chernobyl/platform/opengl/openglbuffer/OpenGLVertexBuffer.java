@@ -24,11 +24,11 @@ public class OpenGLVertexBuffer extends VertexBuffer {
         glDeleteBuffers(m_RendererID);
     }
 
-    void Bind() {
+    public void Bind() {
         glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
     }
 
-    void Unbind() {
+    public void Unbind() {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 

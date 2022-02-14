@@ -8,18 +8,13 @@ import com.chernobyl.gameengine.render.BufferElement;
 import com.chernobyl.gameengine.render.BufferLayout;
 import com.chernobyl.gameengine.render.Shader;
 import com.chernobyl.gameengine.render.ShaderDataType;
+import com.chernobyl.gameengine.renderer.VertexArray;
 import com.chernobyl.platform.linux.LinuxWindow;
 import com.chernobyl.gameengine.window.Window;
 import lombok.Getter;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static com.chernobyl.gameengine.Asserts.HB_CORE_ASSERT;
-import static com.chernobyl.gameengine.Log.HB_CORE_ERROR;
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL20.*;
-import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
@@ -33,10 +28,11 @@ public class Application {
     private static final LayerStack m_LayerStack = new LayerStack();
     private final ImGuiLayer m_ImGuiLayer;
 
-    private final int m_VertexArray;
-    private final VertexBuffer m_VertexBuffer;
-    private final IndexBuffer m_IndexBuffer;
-    private final Shader m_Shader;
+    Shader m_Shader;
+    VertexArray m_VertexArray;
+
+    Shader m_BlueShader;
+    VertexArray m_SquareVA;
 
     public Application() {
         HB_CORE_ASSERT(application == null, "Application already exists!");
@@ -45,8 +41,7 @@ public class Application {
         m_ImGuiLayer = new ImGuiLayer();
         pushOverlay(m_ImGuiLayer);
 
-        m_VertexArray = glGenVertexArrays();
-        glBindVertexArray(m_VertexArray);
+        m_VertexArray = VertexArray.Create();
 
         var vertices = new float[]{
                 -0.5f, -0.5f, 0.0f, 0.8f, 0.2f, 0.8f, 1.0f,
@@ -54,60 +49,90 @@ public class Application {
                 0.0f,  0.5f, 0.0f, 0.8f, 0.8f, 0.2f, 1.0f
         };
 
-        m_VertexBuffer = VertexBuffer.Create(vertices, vertices.length);
-        {
-            BufferLayout layout = new BufferLayout(new BufferElement[]{
-                    new BufferElement(ShaderDataType.Float3, "a_Position", false),
-                    new BufferElement(ShaderDataType.Float4, "a_Color", false)
-            });
+        var vertexBuffer = VertexBuffer.Create(vertices, vertices.length);
+        BufferLayout layout = new BufferLayout(new BufferElement[]{
+                new BufferElement(ShaderDataType.Float3, "a_Position", false),
+                new BufferElement(ShaderDataType.Float4, "a_Color", false)
+        });
+        vertexBuffer.SetLayout(layout);
 
-            m_VertexBuffer.SetLayout(layout);
-        }
-
-        int index = 0;
-		var layout = m_VertexBuffer.GetLayout();
-        for (var element : layout.GetElements())
-        {
-            glEnableVertexAttribArray(index);
-            glVertexAttribPointer(index,
-                    element.GetComponentCount(),
-                    ShaderDataTypeToOpenGLBaseType(element.getType()),
-                    element.isNormalized(),
-                    layout.GetStride(),
-                    element.getOffset());
-            index++;
-        }
-
+        m_VertexArray.AddVertexBuffer(vertexBuffer);
 
         int[] indices = {0, 1, 2};
-        m_IndexBuffer = IndexBuffer.Create(indices, indices.length);
+        var indexBuffer = IndexBuffer.Create(indices, indices.length);
+        m_VertexArray.SetIndexBuffer(indexBuffer);
+
+        m_SquareVA = VertexArray.Create();
+
+        float[] squareVertices = {
+                -0.75f, -0.75f, 0.0f,
+                0.75f, -0.75f, 0.0f,
+                0.75f,  0.75f, 0.0f,
+                -0.75f,  0.75f, 0.0f
+        };
+
+        var squareVB = VertexBuffer.Create(squareVertices, squareVertices.length);
+        squareVB.SetLayout(new BufferLayout(new BufferElement[]{
+                new BufferElement( ShaderDataType.Float3, "a_Position", false)
+        }));
+        m_SquareVA.AddVertexBuffer(squareVB);
+
+        int[] squareIndices = { 0, 1, 2, 2, 3, 0 };
+        var squareIB = IndexBuffer.Create(squareIndices, squareIndices.length);
+        m_SquareVA.SetIndexBuffer(squareIB);
 
         String vertexSrc = """
-                        #version 410 core
+            #version 410 core
 
-                        layout(location = 0) in vec3 a_Position;
-                        layout(location = 1) in vec4 a_Color;
-                        out vec3 v_Position;
-                        out vec4 v_Color;
-                        void main()
-                        {
-                            v_Position = a_Position;
-                            gl_Position = vec4(a_Position, 1.0);
-                            v_Color = a_Color;
-                        }
+            layout(location = 0) in vec3 a_Position;
+            layout(location = 1) in vec4 a_Color;
+            out vec3 v_Position;
+            out vec4 v_Color;
+            void main()
+            {
+                v_Position = a_Position;
+                gl_Position = vec4(a_Position, 1.0);
+                v_Color = a_Color;
+            }
         """;
         String fragmentSrc = """
-                            #version 410 core
+                #version 410 core
 
-                        layout(location = 0) out vec4 color;
-                        in vec3 v_Position;
-                        in vec4 v_Color;
-                        void main()
-                        {
-                            color = v_Color;
-                        }
+            layout(location = 0) out vec4 color;
+            in vec3 v_Position;
+            in vec4 v_Color;
+            void main()
+            {
+                color = v_Color;
+            }
         """;
 
+
+
+        String blueShaderVertexSrc = """
+            #version 410 core
+
+            layout(location = 0) in vec3 a_Position;
+            out vec3 v_Position;
+            void main()
+            {
+                v_Position = a_Position;
+                gl_Position = vec4(a_Position, 1.0);
+            }
+        """;
+
+        String blueShaderFragmentSrc = """
+            #version 410 core
+
+            layout(location = 0) out vec4 color;
+            in vec3 v_Position;
+            void main()
+            {
+                color = vec4(0.2, 0.3, 0.8, 1.0);
+            }
+        """;
+
+        m_BlueShader = new Shader(blueShaderVertexSrc, blueShaderFragmentSrc);
         m_Shader = new Shader(vertexSrc, fragmentSrc);
     }
 
@@ -123,10 +148,13 @@ public class Application {
             glClearColor(0.1f, 0.1f, 0.1f, 1);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-            m_Shader.Bind();
+            m_BlueShader.Bind();
+            m_SquareVA.Bind();
+            glDrawElements(GL_TRIANGLES, m_SquareVA.GetIndexBuffer().getCount(), GL_UNSIGNED_INT, NULL);
 
-            glBindVertexArray(m_VertexArray);
-            glDrawElements(GL_TRIANGLES, m_IndexBuffer.getM_Count(), GL_UNSIGNED_INT, NULL);
+            m_Shader.Bind();
+            m_VertexArray.Bind();
+            glDrawElements(GL_TRIANGLES, m_VertexArray.GetIndexBuffer().getCount(), GL_UNSIGNED_INT, NULL);
 
             for (Layer layer : m_LayerStack)
                 layer.OnUpdate();
@@ -162,27 +190,5 @@ public class Application {
     private static boolean onWindowClose(WindowCloseEvent e) {
         running = false;
         return true;
-    }
-
-
-    static int ShaderDataTypeToOpenGLBaseType(ShaderDataType type)
-    {
-        switch (type)
-        {
-            case Float:    return GL_FLOAT;
-            case Float2:   return GL_FLOAT;
-            case Float3:   return GL_FLOAT;
-            case Float4:   return GL_FLOAT;
-            case Mat3:     return GL_FLOAT;
-            case Mat4:     return GL_FLOAT;
-            case Int:      return GL_INT;
-            case Int2:     return GL_INT;
-            case Int3:     return GL_INT;
-            case Int4:     return GL_INT;
-            case Bool:     return GL_BOOL;
-        }
-
-        HB_CORE_ASSERT(false, "Unknown ShaderDataType!");
-        return 0;
     }
 }

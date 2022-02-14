@@ -9,6 +9,8 @@ import static com.chernobyl.gameengine.Asserts.HB_CORE_ASSERT;
 public abstract class VertexBuffer {
     public abstract BufferLayout GetLayout();
     public abstract void SetLayout(BufferLayout layout);
+    public abstract void Bind();
+    public abstract void Unbind();
 
     public static VertexBuffer Create(float[] vertices, int size) {
         switch (Renderer.GetAPI()) {

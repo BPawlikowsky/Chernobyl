@@ -41,19 +41,19 @@ public class LayerStack implements Iterable<Layer>{
         int it = m_Layers.indexOf(layer);
         if (it != end())
         {
+            layer.OnDetach();
             boolean success = m_Layers.remove(layer);
             HB_CORE_ASSERT(success, "Could not remove layer");
             m_LayerInsertIndex--;
-            layer.OnDetach();
         }
     }
 
     public void PopOverlay(Layer overlay)
     {
-        int it = m_Layers.indexOf(overlay);
+        int it = m_Layers.lastIndexOf(overlay);
         if (it != end()) {
-            m_Layers.remove(it);
             overlay.OnDetach();
+            m_Layers.remove(it);
         }
     }
 
