@@ -21,5 +21,5 @@ public abstract class IndexBuffer {
         return null;
     }
 
-    public abstract int getCount();
+    public abstract int GetCount();
 }
