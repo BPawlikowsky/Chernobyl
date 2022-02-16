@@ -2,6 +2,7 @@ package com.chernobyl.gameengine.layer;
 
 import com.chernobyl.gameengine.Application;
 import com.chernobyl.gameengine.event.*;
+import com.chernobyl.gameengine.core.Timestep;
 import imgui.ImGui;
 import imgui.ImGuiIO;
 import imgui.ImGuiStyle;
@@ -33,7 +34,7 @@ public class ImGuiLayer extends Layer {
         HB_CORE_INFO("ImGui version {0}", ImGui.getVersion());
         ImGuiContext ctx = ImGui.createContext();
         ImGui.setCurrentContext(ctx);
-        long window = Application.getWindow().getNativeWindow();
+        long window = Application.getM_Window().getNativeWindow();
         HB_ASSERT(window != 0, "Native window is null.");
 
         ImGuiIO io = ImGui.getIO();
@@ -60,7 +61,7 @@ public class ImGuiLayer extends Layer {
     public void Begin()
     {
         ImGuiIO io = ImGui.getIO();
-        io.setDisplaySize(Application.getWindow().getWidth(), Application.getWindow().getHeight());
+        io.setDisplaySize(Application.getM_Window().getWidth(), Application.getM_Window().getHeight());
         imGuiImplGlfw.newFrame();
         ImGui.newFrame();
     }
@@ -68,7 +69,7 @@ public class ImGuiLayer extends Layer {
     public void End()
     {
         ImGuiIO io = ImGui.getIO();
-        io.setDisplaySize(Application.getWindow().getWidth(), Application.getWindow().getHeight());
+        io.setDisplaySize(Application.getM_Window().getWidth(), Application.getM_Window().getHeight());
 
         // Rendering
         ImGui.render();
@@ -97,7 +98,7 @@ public class ImGuiLayer extends Layer {
     }
 
     @Override
-    public void OnUpdate() {
+    public void OnUpdate(Timestep ts) {
 
     }
 

@@ -12,7 +12,7 @@ public class LinuxInput extends Input{
     @Override
     protected boolean IsKeyPressedImpl(int keycode) {
         Application.get();
-        long window = Application.getWindow().getNativeWindow();
+        long window = Application.getM_Window().getNativeWindow();
         int state = glfwGetKey(window, keycode);
         return state == GLFW_PRESS || state == GLFW_REPEAT;
     }
@@ -20,7 +20,7 @@ public class LinuxInput extends Input{
     @Override
     protected boolean IsMouseButtonPressedImpl(int button) {
         Application.get();
-        long window = Application.getWindow().getNativeWindow();
+        long window = Application.getM_Window().getNativeWindow();
         int state = glfwGetMouseButton(window, button);
         return state == GLFW_PRESS;
     }
@@ -28,7 +28,7 @@ public class LinuxInput extends Input{
     @Override
     protected Pair<Float, Float> GetMousePositionImpl() {
         Application.get();
-        long window = Application.getWindow().getNativeWindow();
+        long window = Application.getM_Window().getNativeWindow();
         DoubleBuffer xpos, ypos;
         xpos = BufferUtils.createDoubleBuffer(1);
         ypos = BufferUtils.createDoubleBuffer(1);

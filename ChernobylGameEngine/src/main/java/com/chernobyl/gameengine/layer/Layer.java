@@ -1,6 +1,7 @@
 package com.chernobyl.gameengine.layer;
 
 import com.chernobyl.gameengine.event.Event;
+import com.chernobyl.gameengine.core.Timestep;
 
 public abstract class Layer {
     final protected String m_DebugName;
@@ -17,7 +18,7 @@ public abstract class Layer {
 
     public abstract void OnDetach();
 
-    public abstract void OnUpdate();
+    public abstract void OnUpdate(Timestep ts);
 
     public abstract void OnImGuiRender();
 

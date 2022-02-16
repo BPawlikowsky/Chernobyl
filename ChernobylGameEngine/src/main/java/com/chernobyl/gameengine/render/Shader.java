@@ -1,5 +1,7 @@
 package com.chernobyl.gameengine.render;
 
+import com.chernobyl.gameengine.math.Mat4;
+
 import static com.chernobyl.gameengine.Asserts.HB_CORE_ASSERT;
 import static com.chernobyl.gameengine.Log.HB_CORE_ERROR;
 import static org.lwjgl.opengl.GL20.*;
@@ -128,5 +130,11 @@ public class Shader {
     public void Unbind()
     {
         glUseProgram(0);
+    }
+
+    public void UploadUniformMat4(String name, Mat4 matrix)
+    {
+        int location = glGetUniformLocation(m_RendererID, name);
+        glUniformMatrix4fv(location, false, matrix.toArray());
     }
 }

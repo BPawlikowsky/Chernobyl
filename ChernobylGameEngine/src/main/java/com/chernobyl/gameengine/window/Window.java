@@ -1,13 +1,14 @@
 package com.chernobyl.gameengine.window;
 
 import lombok.Getter;
+import lombok.Setter;
 
 public abstract class Window {
     @Getter
     protected long nativeWindow;
     @Getter
     protected String title;
-    @Getter
+    @Getter @Setter
     protected int width, height;
     protected static Window m_Window = null;
     public abstract void OnUpdate();
