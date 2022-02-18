@@ -85,13 +85,16 @@ class ExampleLayer extends Layer {
         m_SquareVA.SetIndexBuffer(squareIB);
 
         String vertexSrc = """
-            #version 410 core
+            #version 330 core
 
             layout(location = 0) in vec3 a_Position;
             layout(location = 1) in vec4 a_Color;
+            
             uniform mat4 u_ViewProjection;
+            
             out vec3 v_Position;
             out vec4 v_Color;
+            
             void main()
             {
                 v_Position = a_Position;
@@ -101,16 +104,21 @@ class ExampleLayer extends Layer {
         """;
 
         String fragmentSrc = """
-            #version 410 core
+            #version 330 core
 
             layout(location = 0) out vec4 color;
+            
             in vec3 v_Position;
             in vec4 v_Color;
+            
             void main()
             {
+                color = vec4(v_Position * 0.5 + 0.5, 1.0);
                 color = v_Color;
             }
         """;
+
+        m_Shader = new Shader(vertexSrc, fragmentSrc);
 
         String blueShaderVertexSrc = """
             #version 410 core
@@ -137,7 +145,6 @@ class ExampleLayer extends Layer {
         """;
 
         m_BlueShader = new Shader(blueShaderVertexSrc, blueShaderFragmentSrc);
-        m_Shader = new Shader(vertexSrc, fragmentSrc);
 
     }
 
@@ -153,6 +160,9 @@ class ExampleLayer extends Layer {
 
     @Override
     public void OnUpdate(Timestep ts) {
+//        m_CameraPosition.zero();
+//        m_CameraRotation = 0.0f;
+
         if (Input.IsKeyPressed(HB_KEY_LEFT))
         m_CameraPosition.x -= m_CameraMoveSpeed * ts.GetSeconds();
 		else if (Input.IsKeyPressed(HB_KEY_RIGHT))
@@ -173,9 +183,6 @@ class ExampleLayer extends Layer {
 
         m_Camera.SetPosition(m_CameraPosition);
         m_Camera.SetRotation(m_CameraRotation);
-
-        m_CameraPosition.zero();
-        m_CameraRotation = 0.0f;
 
         Renderer.BeginScene(m_Camera);
 

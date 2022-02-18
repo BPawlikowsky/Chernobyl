@@ -9,7 +9,6 @@ import com.chernobyl.gameengine.window.Window;
 import lombok.Getter;
 
 import static com.chernobyl.gameengine.Asserts.HB_CORE_ASSERT;
-import static com.chernobyl.gameengine.Log.HB_CORE_INFO;
 import static org.lwjgl.glfw.GLFW.glfwGetTime;
 
 public class Application {

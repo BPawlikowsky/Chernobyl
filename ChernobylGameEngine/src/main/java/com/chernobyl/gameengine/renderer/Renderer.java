@@ -15,7 +15,6 @@ public class Renderer {
     }
 
     public static void EndScene() {
-
     }
 
     public static void Submit(Shader shader, VertexArray vertexArray) {

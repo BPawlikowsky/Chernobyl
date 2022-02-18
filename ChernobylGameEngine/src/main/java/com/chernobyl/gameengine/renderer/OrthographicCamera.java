@@ -7,16 +7,19 @@ import static org.joml.Math.toRadians;
 
 public class OrthographicCamera {
     private final Mat4 m_ProjectionMatrix;
-    private Mat4 m_ViewMatrix;
-    private Mat4 m_ViewProjectionMatrix;
+    private final Mat4 m_ViewMatrix;
+    private final Mat4 m_ViewProjectionMatrix;
 
     private static Vec3 m_Position = new Vec3(0.0f, 0.0f, 0.0f);
     float m_Rotation = 0.0f;
 
     public OrthographicCamera(float left, float right, float bottom, float top) {
-        m_ProjectionMatrix = new Mat4().ortho(left, right, bottom, top, -1.0f, 1.0f);
-        m_ViewMatrix = (Mat4) new Mat4().identity();
-        m_ViewProjectionMatrix = m_ProjectionMatrix.mul(m_ViewMatrix);
+        var ortho = new Mat4().setOrtho(left, right, bottom, top, -1.0f, 1.0f);
+        m_ProjectionMatrix = new Mat4();
+        m_ProjectionMatrix.mul(ortho);
+        m_ViewMatrix = new Mat4(1.0f);
+        m_ViewProjectionMatrix = new Mat4();
+        m_ViewProjectionMatrix.set(m_ProjectionMatrix.mul(m_ViewMatrix));
     }
 
     public Vec3 GetPosition() {
@@ -24,9 +27,7 @@ public class OrthographicCamera {
     }
 
     public void SetPosition(Vec3 position) {
-        m_Position.x = position.x;
-        m_Position.y = position.y;
-        m_Position.z = position.z;
+        m_Position = position;
         RecalculateViewMatrix();
     }
 
@@ -52,11 +53,13 @@ public class OrthographicCamera {
     }
 
     private void RecalculateViewMatrix() {
-        var transform = m_ViewMatrix
-                .rotate(toRadians(m_Rotation), new Vec3(0f, 0f, 1f))
-                .translate(m_Position);
+        var transform = new Mat4()
+                .translate(m_Position)
+                .rotate(toRadians(m_Rotation), new Vec3(0f, 0f, 1f));
 
-        m_ViewMatrix = transform.invert();
-        m_ViewProjectionMatrix =  m_ProjectionMatrix.mul(m_ViewMatrix);
+        transform.invert();
+        m_ViewMatrix.set(transform);
+
+        m_ProjectionMatrix.mul(m_ViewMatrix, m_ViewProjectionMatrix);
     }
 }

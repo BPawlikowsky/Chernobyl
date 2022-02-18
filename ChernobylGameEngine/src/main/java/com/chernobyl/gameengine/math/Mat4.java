@@ -5,19 +5,27 @@ import org.joml.Matrix4fc;
 import org.joml.Vector3fc;
 import org.joml.Vector4fc;
 
-import java.nio.FloatBuffer;
-
 public class Mat4 extends Matrix4f {
     public Mat4() {
         super();
     }
 
     public Mat4(float f) {
-        super(f, f, f, f, f, f, f, f, f, f, f, f, f, f, f, f);
+        super(
+                f, 0.0f, 0.0f, 0.0f, 0.0f,
+                f, 0.0f, 0.0f, 0.0f, 0.0f,
+                f, 0.0f, 0.0f, 0.0f, 0.0f,
+                f
+        );
     }
 
     public Mat4(Vector4fc col0, Vector4fc col1, Vector4fc col2, Vector4fc col3) {
         super(col0, col1, col2, col3);
+    }
+
+    @Override
+    public Mat4 identity() {
+        return (Mat4) super.identity();
     }
 
     @Override
