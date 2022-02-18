@@ -87,4 +87,9 @@ public class Mat4 extends Matrix4f {
     public Mat4 invert() {
         return (Mat4) super.invert();
     }
+
+    @Override
+    public Mat4 scale(Vector3fc xyz) {
+        return (Mat4) super.scale(xyz);
+    }
 }

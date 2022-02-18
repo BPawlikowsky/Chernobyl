@@ -9,6 +9,7 @@ import com.chernobyl.gameengine.event.KeyPressedEvent;
 import com.chernobyl.gameengine.event.enums.EventType;
 import com.chernobyl.gameengine.input.Input;
 import com.chernobyl.gameengine.layer.Layer;
+import com.chernobyl.gameengine.math.Mat4;
 import com.chernobyl.gameengine.math.Vec3;
 import com.chernobyl.gameengine.math.Vec4;
 import com.chernobyl.gameengine.render.BufferElement;
@@ -68,10 +69,10 @@ class ExampleLayer extends Layer {
         m_SquareVA = VertexArray.Create();
 
         float[] squareVertices = {
-                -0.75f, -0.75f, 0.0f,
-                0.75f, -0.75f, 0.0f,
-                0.75f,  0.75f, 0.0f,
-                -0.75f,  0.75f, 0.0f
+                -0.5f, -0.5f, 0.0f,
+                 0.5f, -0.5f, 0.0f,
+                 0.5f,  0.5f, 0.0f,
+                -0.5f,  0.5f, 0.0f
         };
 
         var squareVB = VertexBuffer.Create(squareVertices, squareVertices.length);
@@ -124,12 +125,15 @@ class ExampleLayer extends Layer {
             #version 410 core
 
             layout(location = 0) in vec3 a_Position;
+            
+            uniform mat4 u_Transform;
             uniform mat4 u_ViewProjection;
+            
             out vec3 v_Position;
             void main()
             {
                 v_Position = a_Position;
-                gl_Position = u_ViewProjection * vec4(a_Position, 1.0);
+                gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);
             }
         """;
 
@@ -185,6 +189,18 @@ class ExampleLayer extends Layer {
         m_Camera.SetRotation(m_CameraRotation);
 
         Renderer.BeginScene(m_Camera);
+
+        Mat4 scale = new Mat4().scale(new Vec3(0.1f));
+
+        for (int y = 0; y < 20; y++)
+        {
+            for (int x = 0; x < 20; x++)
+            {
+                Vec3 pos = new Vec3(x * 0.11f, y * 0.11f, 0.0f);
+                Mat4 transform = new Mat4().translate(pos).mul(scale);
+                Renderer.Submit(m_BlueShader, m_SquareVA, transform);
+            }
+        }
 
         Renderer.Submit(m_BlueShader, m_SquareVA);
         Renderer.Submit(m_Shader, m_VertexArray);
