@@ -2,6 +2,7 @@ package com.chernobyl.gameengine.renderer;
 
 import com.chernobyl.gameengine.math.Mat4;
 import com.chernobyl.gameengine.render.Shader;
+import com.chernobyl.platform.opengl.OpenGLShader;
 
 public class Renderer {
     private static class SceneData {
@@ -18,19 +19,21 @@ public class Renderer {
     }
 
     public static void Submit(Shader shader, VertexArray vertexArray, Mat4 transform) {
-        shader.Bind();
-        shader.UploadUniformMat4("u_ViewProjection", s_SceneData.ViewProjectionMatrix);
-        shader.UploadUniformMat4("u_Transform", transform);
+        OpenGLShader glShader = (OpenGLShader) shader;
+        glShader.Bind();
+        glShader.UploadUniformMat4("u_ViewProjection", s_SceneData.ViewProjectionMatrix);
+        glShader.UploadUniformMat4("u_Transform", transform);
 
         vertexArray.Bind();
         RenderCommand.DrawIndexed(vertexArray);
     }
 
     public static void Submit(Shader shader, VertexArray vertexArray) {
-        shader.Bind();
+        OpenGLShader glShader = (OpenGLShader) shader;
+        glShader.Bind();
         var transform = new Mat4(1.0f);
-        shader.UploadUniformMat4("u_ViewProjection", s_SceneData.ViewProjectionMatrix);
-        shader.UploadUniformMat4("u_Transform", transform);
+        glShader.UploadUniformMat4("u_ViewProjection", s_SceneData.ViewProjectionMatrix);
+        glShader.UploadUniformMat4("u_Transform", transform);
 
         vertexArray.Bind();
         RenderCommand.DrawIndexed(vertexArray);

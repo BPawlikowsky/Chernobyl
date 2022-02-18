@@ -86,8 +86,6 @@ public class ImGuiLayer extends Layer {
 
     public void OnImGuiRender()
     {
-        ImBoolean show = new ImBoolean(true);
-        ImGui.showDemoWindow(show);
     }
 
     @Override
