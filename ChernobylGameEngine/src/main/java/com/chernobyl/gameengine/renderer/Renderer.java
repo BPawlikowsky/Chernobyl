@@ -5,6 +5,10 @@ import com.chernobyl.gameengine.render.Shader;
 import com.chernobyl.platform.opengl.OpenGLShader;
 
 public class Renderer {
+    public static void Init() {
+        RenderCommand.Init();
+    }
+
     private static class SceneData {
         Mat4 ViewProjectionMatrix;
     }

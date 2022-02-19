@@ -4,6 +4,7 @@ import com.chernobyl.gameengine.event.*;
 import com.chernobyl.gameengine.layer.*;
 import com.chernobyl.gameengine.event.enums.EventType;
 import com.chernobyl.gameengine.core.Timestep;
+import com.chernobyl.gameengine.renderer.Renderer;
 import com.chernobyl.platform.linux.LinuxWindow;
 import com.chernobyl.gameengine.window.Window;
 import lombok.Getter;
@@ -29,6 +30,9 @@ public class Application {
 
         m_Window = LinuxWindow.get();
         m_Window.SetEventCallback(Application::onEvent);
+
+        Renderer.Init();
+
         m_ImGuiLayer = new ImGuiLayer();
         pushOverlay(m_ImGuiLayer);
 

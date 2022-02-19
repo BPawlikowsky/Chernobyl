@@ -8,6 +8,12 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class OpenGLRendererAPI extends RendererAPI {
+    @Override
+    public void Init() {
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    }
+
     public void SetClearColor(Vec4 color)
     {
         glClearColor(color.x, color.y, color.x, color.z);

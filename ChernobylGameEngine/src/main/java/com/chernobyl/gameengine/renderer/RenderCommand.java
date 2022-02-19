@@ -17,4 +17,8 @@ public class RenderCommand {
     public static void DrawIndexed(VertexArray vertexArray) {
         s_RendererAPI.DrawIndexed(vertexArray);
     }
+
+    public static void Init() {
+        s_RendererAPI.Init();
+    }
 }

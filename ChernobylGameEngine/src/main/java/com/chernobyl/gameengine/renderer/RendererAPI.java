@@ -1,10 +1,10 @@
 package com.chernobyl.gameengine.renderer;
 
 import com.chernobyl.gameengine.math.Vec4;
-import lombok.Getter;
-
 
 public abstract class RendererAPI {
+    public abstract void Init();
+
     public enum API {
         None, OpenGL
     }

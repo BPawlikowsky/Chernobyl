@@ -35,7 +35,8 @@ class ExampleLayer extends Layer {
     private float m_CameraRotation = 0.0f;
     private final float m_CameraRotationSpeed = 180.0f;
     private Vec3 m_SquareColor = new Vec3( 0.2f, 0.3f, 0.8f );
-    private final Texture2D m_Texture;
+
+    private final Texture2D m_Texture, m_ChernoLogoTexture;
 
     public ExampleLayer() {
         super("Example");
@@ -181,7 +182,8 @@ class ExampleLayer extends Layer {
         m_TextureShader.Bind();
         m_TextureShader.UploadUniformInt("u_Texture", 0);
 
-        m_Texture = Texture2D.Create("resources/assets/textures/Checkerboard.png");
+        m_Texture = Texture2D.Create("assets/textures/Checkerboard.png");
+        m_ChernoLogoTexture = Texture2D.Create("assets/textures/ChernoLogo.png");
     }
 
     @Override
@@ -235,6 +237,9 @@ class ExampleLayer extends Layer {
         }
 
         m_Texture.Bind();
+        Renderer.Submit(m_TextureShader, m_SquareVA, new Mat4().scale(new Vec3(1.5f)));
+
+        m_ChernoLogoTexture.Bind();
         Renderer.Submit(m_TextureShader, m_SquareVA, new Mat4().scale(new Vec3(1.5f)));
 
         // Triangle
