@@ -11,6 +11,18 @@ public abstract class Shader {
     public abstract void Bind();
     public abstract void Unbind();
 
+    public static Shader Create(String filepath)
+    {
+        switch (Renderer.GetAPI())
+        {
+            case None:    HB_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return null;
+            case OpenGL:  return new OpenGLShader(filepath);
+        }
+
+        HB_CORE_ASSERT(false, "Unknown RendererAPI!");
+        return null;
+    }
+
     public static Shader Create(String vertexSrc, String fragmentSrc) {
         switch (Renderer.GetAPI()){
             case None:    HB_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return null;
