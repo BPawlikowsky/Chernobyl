@@ -34,8 +34,8 @@ class ExampleLayer extends Layer {
 
     private float m_CameraRotation = 0.0f;
     private final float m_CameraRotationSpeed = 180.0f;
-    Vec3 m_SquareColor = new Vec3( 0.2f, 0.3f, 0.8f );
-    Texture2D m_Texture;
+    private Vec3 m_SquareColor = new Vec3( 0.2f, 0.3f, 0.8f );
+    private final Texture2D m_Texture;
 
     public ExampleLayer() {
         super("Example");

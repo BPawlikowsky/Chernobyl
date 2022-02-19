@@ -10,7 +10,7 @@ import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
 import static org.lwjgl.opengl.GL11.*;
 
 public class OpenGlContext extends GraphicsContext {
-    private long m_WindowHandle;
+    private final long m_WindowHandle;
 
     public OpenGlContext(long windowHandle) {
         HB_CORE_ASSERT(windowHandle != 0, "Window handle is null!");
