@@ -13,10 +13,7 @@ import com.chernobyl.gameengine.render.BufferElement;
 import com.chernobyl.gameengine.render.BufferLayout;
 import com.chernobyl.gameengine.render.Shader;
 import com.chernobyl.gameengine.render.ShaderDataType;
-import com.chernobyl.gameengine.renderer.OrthographicCamera;
-import com.chernobyl.gameengine.renderer.RenderCommand;
-import com.chernobyl.gameengine.renderer.Renderer;
-import com.chernobyl.gameengine.renderer.VertexArray;
+import com.chernobyl.gameengine.renderer.*;
 import com.chernobyl.gameengine.core.Timestep;
 import com.chernobyl.platform.opengl.OpenGLShader;
 import imgui.ImGui;
@@ -25,6 +22,7 @@ import static com.chernobyl.gameengine.input.KeyCodes.*;
 
 class ExampleLayer extends Layer {
     private final OpenGLShader m_Shader;
+    private final OpenGLShader m_TextureShader;
     private final OpenGLShader m_FlatColorShader;
 
     private final VertexArray m_VertexArray;
@@ -37,6 +35,7 @@ class ExampleLayer extends Layer {
     private float m_CameraRotation = 0.0f;
     private final float m_CameraRotationSpeed = 180.0f;
     Vec3 m_SquareColor = new Vec3( 0.2f, 0.3f, 0.8f );
+    Texture2D m_Texture;
 
     public ExampleLayer() {
         super("Example");
@@ -67,15 +66,16 @@ class ExampleLayer extends Layer {
         m_SquareVA = VertexArray.Create();
 
         float[] squareVertices = {
-                -0.5f, -0.5f, 0.0f,
-                 0.5f, -0.5f, 0.0f,
-                 0.5f,  0.5f, 0.0f,
-                -0.5f,  0.5f, 0.0f
+                -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
+                 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+                 0.5f,  0.5f, 0.0f, 1.0f, 1.0f,
+                -0.5f,  0.5f, 0.0f, 0.0f, 1.0f
         };
 
         var squareVB = VertexBuffer.Create(squareVertices, squareVertices.length);
         squareVB.SetLayout(new BufferLayout(new BufferElement[]{
-                new BufferElement( ShaderDataType.Float3, "a_Position", false)
+                new BufferElement( ShaderDataType.Float3, "a_Position", false),
+                new BufferElement( ShaderDataType.Float2, "a_TexCoord", false)
         }));
         m_SquareVA.AddVertexBuffer(squareVB);
 
@@ -115,6 +115,7 @@ class ExampleLayer extends Layer {
 
         m_Shader = (OpenGLShader) Shader.Create(vertexSrc, fragmentSrc);
 
+
         String flatColorShaderVertexSrc = """
             #version 410 core
 
@@ -148,6 +149,39 @@ class ExampleLayer extends Layer {
 
         m_FlatColorShader = (OpenGLShader) Shader.Create(flatColorShaderVertexSrc, flatColorShaderFragmentSrc);
 
+        String textureShaderVertexSrc = """
+            #version 330 core
+
+            layout(location = 0) in vec3 a_Position;
+            layout(location = 1) in vec2 a_TexCoord;
+            uniform mat4 u_ViewProjection;
+            uniform mat4 u_Transform;
+            out vec2 v_TexCoord;
+            void main()
+            {
+                v_TexCoord = a_TexCoord;
+                gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);
+            }
+        """;
+
+        String textureShaderFragmentSrc = """
+            #version 330 core
+
+            layout(location = 0) out vec4 color;
+            in vec2 v_TexCoord;
+
+            uniform sampler2D u_Texture;
+            void main()
+            {
+                color = texture(u_Texture, v_TexCoord);
+            }
+        """;
+
+        m_TextureShader = (OpenGLShader) Shader.Create(textureShaderVertexSrc, textureShaderFragmentSrc);
+        m_TextureShader.Bind();
+        m_TextureShader.UploadUniformInt("u_Texture", 0);
+
+        m_Texture = Texture2D.Create("resources/assets/textures/Checkerboard.png");
     }
 
     @Override
@@ -187,10 +221,8 @@ class ExampleLayer extends Layer {
 
         Mat4 scale = new Mat4().scale(new Vec3(0.1f));
 
-
         m_FlatColorShader.Bind();
         m_FlatColorShader.UploadUniformFloat3("u_Color", m_SquareColor);
-
 
         for (int y = 0; y < 20; y++)
         {
@@ -202,7 +234,11 @@ class ExampleLayer extends Layer {
             }
         }
 
-        Renderer.Submit(m_Shader, m_VertexArray);
+        m_Texture.Bind();
+        Renderer.Submit(m_TextureShader, m_SquareVA, new Mat4().scale(new Vec3(1.5f)));
+
+        // Triangle
+        // Renderer.Submit(m_Shader, m_VertexArray);
 
         Renderer.EndScene();
     }
