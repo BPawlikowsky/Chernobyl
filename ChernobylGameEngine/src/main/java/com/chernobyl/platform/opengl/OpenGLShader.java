@@ -5,7 +5,6 @@ import com.chernobyl.gameengine.render.Shader;
 
 import java.io.*;
 import java.util.HashMap;
-import java.util.Vector;
 
 import static com.chernobyl.gameengine.Asserts.HB_CORE_ASSERT;
 import static com.chernobyl.gameengine.Log.HB_CORE_ERROR;
@@ -16,14 +15,22 @@ import static org.lwjgl.opengl.GL20.glUniformMatrix4fv;
 
 public class OpenGLShader extends Shader {
     private int m_RendererID;
+    private final String m_Name;
 
     public OpenGLShader(String filepath) {
         String source = ReadFile(filepath);
         var shaderSources = PreProcess(source);
         Compile(shaderSources);
+
+        // Extract name from filepath
+        var lastSlash = filepath.lastIndexOf("/");
+        lastSlash = lastSlash == filepath.length() - 1 ? 0 : lastSlash + 1;
+        var lastDot = filepath.lastIndexOf('.');
+        m_Name = filepath.substring(lastSlash, lastDot);
     }
 
-    public OpenGLShader(String vertexSrc, String fragmentSrc) {
+    public OpenGLShader(String name, String vertexSrc, String fragmentSrc) {
+        m_Name = name;
         HashMap<Integer, String> sources = new HashMap<>();
         sources.put(GL_VERTEX_SHADER, vertexSrc);
         sources.put(GL_FRAGMENT_SHADER, fragmentSrc);
@@ -89,7 +96,9 @@ public class OpenGLShader extends Shader {
 
     void Compile(HashMap<Integer, String> shaderSources) {
         int program = glCreateProgram();
-        Vector<Integer> glShaderIDs = new Vector<>(shaderSources.size());
+        HB_CORE_ASSERT(shaderSources.size() <= 2, "We only support 2 shaders for now");
+        int[] glShaderIDs = new int[2];
+        int glShaderIDIndex = 0;
         for (var kv : shaderSources.entrySet()) {
             int type = kv.getKey();
             String source = kv.getValue();
@@ -119,7 +128,7 @@ public class OpenGLShader extends Shader {
             }
 
             glAttachShader(program, shader);
-            glShaderIDs.addElement(shader);
+            glShaderIDs[glShaderIDIndex++] = shader;
         }
 
         m_RendererID = program;
@@ -166,6 +175,11 @@ public class OpenGLShader extends Shader {
 
     public void Unbind() {
         glUseProgram(0);
+    }
+
+    @Override
+    public String GetName() {
+        return m_Name;
     }
 
     public void UploadUniformInt(String name, int value) {

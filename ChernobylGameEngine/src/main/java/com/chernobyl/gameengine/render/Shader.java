@@ -23,13 +23,15 @@ public abstract class Shader {
         return null;
     }
 
-    public static Shader Create(String vertexSrc, String fragmentSrc) {
+    public static Shader Create(String name, String vertexSrc, String fragmentSrc) {
         switch (Renderer.GetAPI()){
             case None:    HB_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return null;
-            case OpenGL:  return new OpenGLShader(vertexSrc, fragmentSrc);
+            case OpenGL:  return new OpenGLShader(name, vertexSrc, fragmentSrc);
         }
 
         HB_CORE_ASSERT(false, "Unknown RendererAPI!");
         return null;
     }
+
+    public abstract String GetName();
 }

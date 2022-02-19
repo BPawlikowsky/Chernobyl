@@ -9,20 +9,18 @@ import com.chernobyl.gameengine.layer.Layer;
 import com.chernobyl.gameengine.math.Mat4;
 import com.chernobyl.gameengine.math.Vec3;
 import com.chernobyl.gameengine.math.Vec4;
-import com.chernobyl.gameengine.render.BufferElement;
-import com.chernobyl.gameengine.render.BufferLayout;
-import com.chernobyl.gameengine.render.Shader;
-import com.chernobyl.gameengine.render.ShaderDataType;
+import com.chernobyl.gameengine.render.*;
 import com.chernobyl.gameengine.renderer.*;
 import com.chernobyl.gameengine.core.Timestep;
 import com.chernobyl.platform.opengl.OpenGLShader;
 import imgui.ImGui;
 
+import static com.chernobyl.gameengine.Log.HB_INFO;
 import static com.chernobyl.gameengine.input.KeyCodes.*;
 
 class ExampleLayer extends Layer {
     private final OpenGLShader m_Shader;
-    private final OpenGLShader m_TextureShader;
+    private final ShaderLibrary m_ShaderLibrary = new ShaderLibrary();
     private final OpenGLShader m_FlatColorShader;
 
     private final VertexArray m_VertexArray;
@@ -114,7 +112,7 @@ class ExampleLayer extends Layer {
             }
         """;
 
-        m_Shader = (OpenGLShader) Shader.Create(vertexSrc, fragmentSrc);
+        m_Shader = (OpenGLShader) Shader.Create("VertexPosColor" ,vertexSrc, fragmentSrc);
 
 
         String flatColorShaderVertexSrc = """
@@ -148,14 +146,14 @@ class ExampleLayer extends Layer {
             }
         """;
 
-        m_FlatColorShader = (OpenGLShader) Shader.Create(flatColorShaderVertexSrc, flatColorShaderFragmentSrc);
+        m_FlatColorShader = (OpenGLShader) Shader.Create("FlatColor",flatColorShaderVertexSrc, flatColorShaderFragmentSrc);
 
-        m_TextureShader = (OpenGLShader) Shader.Create("assets/shaders/Texture.glsl");
-        m_TextureShader.Bind();
-        m_TextureShader.UploadUniformInt("u_Texture", 0);
+        var textureShader = (OpenGLShader) m_ShaderLibrary.Load("assets/shaders/Texture.glsl");
 
         m_Texture = Texture2D.Create("assets/textures/Checkerboard.png");
         m_ChernoLogoTexture = Texture2D.Create("assets/textures/ChernoLogo.png");
+        textureShader.Bind();
+        textureShader.UploadUniformInt("u_Texture", 0);
     }
 
     @Override
@@ -207,12 +205,13 @@ class ExampleLayer extends Layer {
                 Renderer.Submit(m_FlatColorShader, m_SquareVA, transform);
             }
         }
+        var textureShader = m_ShaderLibrary.Get("Texture");
 
         m_Texture.Bind();
-        Renderer.Submit(m_TextureShader, m_SquareVA, new Mat4().scale(new Vec3(1.5f)));
+        Renderer.Submit(textureShader, m_SquareVA, new Mat4().scale(new Vec3(1.5f)));
 
         m_ChernoLogoTexture.Bind();
-        Renderer.Submit(m_TextureShader, m_SquareVA, new Mat4().scale(new Vec3(1.5f)));
+        Renderer.Submit(textureShader, m_SquareVA, new Mat4().scale(new Vec3(1.5f)));
 
         // Triangle
         // Renderer.Submit(m_Shader, m_VertexArray);
