@@ -7,3 +7,10 @@ Chernobyl.iml
 imgui.ini
 /ChernobylGameEngine/src/main/resources/META-INF/MANIFEST.MF
 /__Chernobyl.iml
+
+# Ignore Gradle project-specific cache directory
+.gradle
+
+# Ignore Gradle build output directory
+build
+lib
