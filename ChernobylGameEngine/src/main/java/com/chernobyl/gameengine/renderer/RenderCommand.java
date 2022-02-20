@@ -6,6 +6,11 @@ import com.chernobyl.platform.opengl.OpenGLRendererAPI;
 public class RenderCommand {
     private static final RendererAPI s_RendererAPI = new OpenGLRendererAPI();
 
+    static void SetViewport(int x, int y, int width, int height)
+    {
+        s_RendererAPI.SetViewport(x, y, width, height);
+    }
+
     public static void SetClearColor(Vec4 color) {
         s_RendererAPI.SetClearColor(color);
     }

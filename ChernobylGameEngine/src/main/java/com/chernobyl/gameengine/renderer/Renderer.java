@@ -16,6 +16,11 @@ public class Renderer {
     private static final SceneData s_SceneData = new SceneData();
     private static final RendererAPI.API s_RendererAPI = RendererAPI.API.OpenGL;
 
+    public static void OnWindowResize(int width, int height)
+    {
+        RenderCommand.SetViewport(0, 0, width, height);
+    }
+
     public static void BeginScene(OrthographicCamera camera) {
         s_SceneData.ViewProjectionMatrix = camera.GetViewProjectionMatrix();
     }

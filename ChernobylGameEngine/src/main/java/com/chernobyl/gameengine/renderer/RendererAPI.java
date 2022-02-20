@@ -11,6 +11,8 @@ public abstract class RendererAPI {
 
     private static final API s_API = API.OpenGL;
 
+    public abstract void SetViewport(int x, int y, int width, int height);
+
     public abstract void SetClearColor(Vec4 color);
     public abstract void Clear();
 

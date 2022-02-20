@@ -14,6 +14,11 @@ public class OpenGLRendererAPI extends RendererAPI {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
 
+    public void SetViewport(int x, int y, int width, int height)
+    {
+        glViewport(x, y, width, height);
+    }
+
     public void SetClearColor(Vec4 color)
     {
         glClearColor(color.x, color.y, color.x, color.z);

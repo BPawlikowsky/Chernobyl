@@ -71,6 +71,10 @@ public class OrthographicCameraController {
         dispatcher.Dispatch(this::OnWindowResized, EventType.WindowResize);
     }
 
+    public float GetZoomLevel() { return m_ZoomLevel; }
+
+    public void SetZoomLevel(float level) { m_ZoomLevel = level; }
+
     private boolean OnMouseScrolled(MouseScrolledEvent e) {
         m_ZoomLevel -= e.getYOffset() * 0.25f;
         m_ZoomLevel = Math.max(m_ZoomLevel, 0.25f);

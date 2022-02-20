@@ -24,6 +24,8 @@ public class Application {
 
     private float m_LastFrameTime = 0.0f;
 
+    private boolean m_Minimized = false;
+
     public Application() {
 
         HB_CORE_ASSERT(s_Instance == null, "Application already exists!");
@@ -48,12 +50,14 @@ public class Application {
     public void Run() {
         while (m_Running) {
 
-            float time = (float)glfwGetTime();
+            float time = (float) glfwGetTime();
             Timestep timestep = new Timestep(time - m_LastFrameTime);
             m_LastFrameTime = time;
 
-            for (Layer layer : m_LayerStack)
-                layer.OnUpdate(timestep);
+            if (!m_Minimized) {
+                for (Layer layer : m_LayerStack)
+                    layer.OnUpdate(timestep);
+            }
 
             m_ImGuiLayer.Begin();
             for (Layer layer : m_LayerStack)
@@ -67,7 +71,8 @@ public class Application {
 
     private void onEvent(Event e) {
         EventDispatcher dispatcher = new EventDispatcher(e);
-        dispatcher.Dispatch(this::onWindowClose, EventType.WindowClose);
+        dispatcher.Dispatch(this::OnWindowClose, EventType.WindowClose);
+        dispatcher.Dispatch(this::OnWindowResize, EventType.WindowResize);
 
         for (int i = m_LayerStack.end(); i >= m_LayerStack.begin(); i--) {
             m_LayerStack.get(i).OnEvent(e);
@@ -83,8 +88,20 @@ public class Application {
         m_LayerStack.PushOverlay(overlay);
     }
 
-    private boolean onWindowClose(WindowCloseEvent e) {
+    private boolean OnWindowClose(WindowCloseEvent e) {
         m_Running = false;
         return true;
+    }
+
+    private boolean OnWindowResize(WindowResizeEvent e) {
+        if (e.getWidth() == 0 || e.getHeight() == 0) {
+            m_Minimized = true;
+            return false;
+        }
+
+        m_Minimized = false;
+        Renderer.OnWindowResize(e.getWidth(), e.getHeight());
+
+        return false;
     }
 }
