@@ -1,12 +1,10 @@
 package com.chernobyl.client;
 
 
-import com.chernobyl.gameengine.OrthographicCamera;
 import com.chernobyl.gameengine.OrthographicCameraController;
 import com.chernobyl.gameengine.buffer.IndexBuffer;
 import com.chernobyl.gameengine.buffer.VertexBuffer;
 import com.chernobyl.gameengine.event.Event;
-import com.chernobyl.gameengine.input.Input;
 import com.chernobyl.gameengine.layer.Layer;
 import com.chernobyl.gameengine.math.Mat4;
 import com.chernobyl.gameengine.math.Vec3;
@@ -16,9 +14,6 @@ import com.chernobyl.gameengine.renderer.*;
 import com.chernobyl.gameengine.core.Timestep;
 import com.chernobyl.platform.opengl.OpenGLShader;
 import imgui.ImGui;
-
-import static com.chernobyl.gameengine.Log.HB_INFO;
-import static com.chernobyl.gameengine.input.KeyCodes.*;
 
 class ExampleLayer extends Layer {
     private final OpenGLShader m_Shader;
