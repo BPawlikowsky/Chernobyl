@@ -1,5 +1,6 @@
 package com.chernobyl.gameengine.renderer;
 
+import com.chernobyl.gameengine.OrthographicCamera;
 import com.chernobyl.gameengine.math.Mat4;
 import com.chernobyl.gameengine.render.Shader;
 import com.chernobyl.platform.opengl.OpenGLShader;

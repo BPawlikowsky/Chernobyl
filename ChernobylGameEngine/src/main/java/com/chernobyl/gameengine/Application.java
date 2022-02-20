@@ -29,7 +29,7 @@ public class Application {
         HB_CORE_ASSERT(s_Instance == null, "Application already exists!");
 
         m_Window = LinuxWindow.get();
-        m_Window.SetEventCallback(Application::onEvent);
+        m_Window.SetEventCallback(this::onEvent);
 
         Renderer.Init();
 
@@ -65,9 +65,9 @@ public class Application {
         m_Window.Shutdown();
     }
 
-    private static void onEvent(Event e) {
+    private void onEvent(Event e) {
         EventDispatcher dispatcher = new EventDispatcher(e);
-        dispatcher.Dispatch(Application::onWindowClose, EventType.WindowClose);
+        dispatcher.Dispatch(this::onWindowClose, EventType.WindowClose);
 
         for (int i = m_LayerStack.end(); i >= m_LayerStack.begin(); i--) {
             m_LayerStack.get(i).OnEvent(e);
@@ -83,7 +83,7 @@ public class Application {
         m_LayerStack.PushOverlay(overlay);
     }
 
-    private static boolean onWindowClose(WindowCloseEvent e) {
+    private boolean onWindowClose(WindowCloseEvent e) {
         m_Running = false;
         return true;
     }

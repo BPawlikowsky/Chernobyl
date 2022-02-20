@@ -1,4 +1,4 @@
-package com.chernobyl.gameengine.renderer;
+package com.chernobyl.gameengine;
 
 import com.chernobyl.gameengine.math.Mat4;
 import com.chernobyl.gameengine.math.Vec3;
@@ -6,7 +6,7 @@ import com.chernobyl.gameengine.math.Vec3;
 import static org.joml.Math.toRadians;
 
 public class OrthographicCamera {
-    private final Mat4 m_ProjectionMatrix;
+    private Mat4 m_ProjectionMatrix;
     private final Mat4 m_ViewMatrix;
     private final Mat4 m_ViewProjectionMatrix;
 
@@ -60,6 +60,12 @@ public class OrthographicCamera {
         transform.invert();
         m_ViewMatrix.set(transform);
 
+        m_ProjectionMatrix.mul(m_ViewMatrix, m_ViewProjectionMatrix);
+    }
+
+    void SetProjection(float left, float right, float bottom, float top)
+    {
+        m_ProjectionMatrix = new Mat4().ortho(left, right, bottom, top, -1.0f, 1.0f);
         m_ProjectionMatrix.mul(m_ViewMatrix, m_ViewProjectionMatrix);
     }
 }

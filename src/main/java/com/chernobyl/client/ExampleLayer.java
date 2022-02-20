@@ -1,6 +1,8 @@
 package com.chernobyl.client;
 
 
+import com.chernobyl.gameengine.OrthographicCamera;
+import com.chernobyl.gameengine.OrthographicCameraController;
 import com.chernobyl.gameengine.buffer.IndexBuffer;
 import com.chernobyl.gameengine.buffer.VertexBuffer;
 import com.chernobyl.gameengine.event.Event;
@@ -26,20 +28,15 @@ class ExampleLayer extends Layer {
     private final VertexArray m_VertexArray;
     private final VertexArray m_SquareVA;
 
-    private final OrthographicCamera m_Camera;
-    private final Vec3 m_CameraPosition = new Vec3();
-    private final float m_CameraMoveSpeed = 5.0f;
+    private OrthographicCameraController m_CameraController;
 
-    private float m_CameraRotation = 0.0f;
-    private final float m_CameraRotationSpeed = 180.0f;
     private Vec3 m_SquareColor = new Vec3( 0.2f, 0.3f, 0.8f );
-
     private final Texture2D m_Texture, m_ChernoLogoTexture;
 
     public ExampleLayer() {
         super("Example");
 
-        m_Camera = new OrthographicCamera(-1.6f, 1.6f, -0.9f, 0.9f);
+        m_CameraController = new OrthographicCameraController(1280.0f / 720.0f);
 
         m_VertexArray = VertexArray.Create();
 
@@ -168,28 +165,12 @@ class ExampleLayer extends Layer {
 
     @Override
     public void OnUpdate(Timestep ts) {
-        if (Input.IsKeyPressed(HB_KEY_LEFT))
-        m_CameraPosition.x -= m_CameraMoveSpeed * ts.GetSeconds();
-		else if (Input.IsKeyPressed(HB_KEY_RIGHT))
-        m_CameraPosition.x += m_CameraMoveSpeed * ts.GetSeconds();
-
-        if (Input.IsKeyPressed(HB_KEY_UP))
-        m_CameraPosition.y += m_CameraMoveSpeed * ts.GetSeconds();
-		else if (Input.IsKeyPressed(HB_KEY_DOWN))
-        m_CameraPosition.y -= m_CameraMoveSpeed * ts.GetSeconds();
-
-        if (Input.IsKeyPressed(HB_KEY_A))
-        m_CameraRotation += m_CameraRotationSpeed * ts.GetSeconds();
-        if (Input.IsKeyPressed(HB_KEY_D))
-        m_CameraRotation -= m_CameraRotationSpeed * ts.GetSeconds();
+        m_CameraController.OnUpdate(ts);
 
         RenderCommand.SetClearColor(new Vec4(0.1f, 0.1f, 0.1f, 1 ));
         RenderCommand.Clear();
 
-        m_Camera.SetPosition(m_CameraPosition);
-        m_Camera.SetRotation(m_CameraRotation);
-
-        Renderer.BeginScene(m_Camera);
+        Renderer.BeginScene(m_CameraController.GetCamera());
 
         Mat4 scale = new Mat4().scale(new Vec3(0.1f));
 
@@ -230,5 +211,6 @@ class ExampleLayer extends Layer {
 
     @Override
     public void OnEvent(Event event) {
+        m_CameraController.OnEvent(event);
     }
 }
