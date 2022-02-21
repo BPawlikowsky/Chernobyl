@@ -26,6 +26,14 @@ public class BufferElement {
         Normalized = normalized;
     }
 
+    public BufferElement(ShaderDataType type, String name) {
+        Name = name;
+        Type = type;
+        Size = ShaderDataTypeSize(type);
+        Offset = 0;
+        Normalized = false;
+    }
+
     public int GetComponentCount() {
         switch (Type) {
             case Float:

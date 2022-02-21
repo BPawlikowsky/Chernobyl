@@ -22,6 +22,14 @@ public class LayerStack implements Iterable<Layer>{
         m_LayerInsertIndex = 0;
     }
 
+    public void destroy()
+    {
+        for (Layer layer : m_Layers)
+        {
+            layer.OnDetach();
+        }
+    }
+
     public void PushLayer(Layer layer)
     {
         if(m_Layers.size() == 0) m_Layers.addElement(layer);

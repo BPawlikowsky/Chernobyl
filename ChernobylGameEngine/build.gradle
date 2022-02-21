@@ -29,7 +29,6 @@ repositories {
 }
 
 def OSCheck() {
-    group = 'custom-tasks'
     var name = ''
     if (Os.isFamily(Os.FAMILY_WINDOWS)) {
         println "LWJGL NATIVES SET TO WINDOWS"

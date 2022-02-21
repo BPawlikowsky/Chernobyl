@@ -40,7 +40,7 @@ public class Application {
 
     }
 
-    public static Application get() {
+    public static Application Create() {
         if (s_Instance == null) {
             s_Instance = new Application();
         }

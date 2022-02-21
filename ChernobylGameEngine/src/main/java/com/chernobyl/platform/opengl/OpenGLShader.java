@@ -160,8 +160,10 @@ public class OpenGLShader extends Shader {
             return;
         }
 
-        for (var id : glShaderIDs)
+        for (var id : glShaderIDs) {
             glDetachShader(program, id);
+            glDeleteShader(id);
+        }
     }
 
 

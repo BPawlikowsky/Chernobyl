@@ -11,6 +11,7 @@ import com.chernobyl.gameengine.math.Vec3;
 import lombok.Getter;
 
 import static com.chernobyl.gameengine.input.KeyCodes.*;
+import static org.joml.Math.*;
 
 public class OrthographicCameraController {
     private float m_AspectRatio;
@@ -41,21 +42,36 @@ public class OrthographicCameraController {
     }
 
     public void OnUpdate(Timestep ts) {
-        if (Input.IsKeyPressed(HB_KEY_A))
-            m_CameraPosition.x -= m_CameraTranslationSpeed * ts.GetSeconds();
-        else if (Input.IsKeyPressed(HB_KEY_D))
-            m_CameraPosition.x += m_CameraTranslationSpeed * ts.GetSeconds();
+        if (Input.IsKeyPressed(HB_KEY_A)) {
+            m_CameraPosition.x -= cos(toRadians(m_CameraRotation)) * m_CameraTranslationSpeed * ts.GetSeconds();
+            m_CameraPosition.y -= sin(toRadians(m_CameraRotation)) * m_CameraTranslationSpeed * ts.GetSeconds();
+        }
+        else if (Input.IsKeyPressed(HB_KEY_D)) {
+            m_CameraPosition.x += cos(toRadians(m_CameraRotation)) * m_CameraTranslationSpeed * ts.GetSeconds();
+            m_CameraPosition.y += sin(toRadians(m_CameraRotation)) * m_CameraTranslationSpeed * ts.GetSeconds();
+        }
 
         if (Input.IsKeyPressed(HB_KEY_W))
-            m_CameraPosition.y += m_CameraTranslationSpeed * ts.GetSeconds();
+        {
+            m_CameraPosition.x += -sin(toRadians(m_CameraRotation)) * m_CameraTranslationSpeed * ts.GetSeconds();
+            m_CameraPosition.y += cos(toRadians(m_CameraRotation)) * m_CameraTranslationSpeed * ts.GetSeconds();
+        }
         else if (Input.IsKeyPressed(HB_KEY_S))
-            m_CameraPosition.y -= m_CameraTranslationSpeed * ts.GetSeconds();
+        {
+            m_CameraPosition.x -= -sin(toRadians(m_CameraRotation)) * m_CameraTranslationSpeed * ts.GetSeconds();
+            m_CameraPosition.y -= cos(toRadians(m_CameraRotation)) * m_CameraTranslationSpeed * ts.GetSeconds();
+        }
 
         if (m_Rotation) {
             if (Input.IsKeyPressed(HB_KEY_Q))
                 m_CameraRotation += m_CameraRotationSpeed * ts.GetSeconds();
             if (Input.IsKeyPressed(HB_KEY_E))
                 m_CameraRotation -= m_CameraRotationSpeed * ts.GetSeconds();
+
+            if (m_CameraRotation > 180.0f)
+                m_CameraRotation -= 360.0f;
+            else if (m_CameraRotation <= -180.0f)
+                m_CameraRotation += 360.0f;
 
             m_Camera.SetRotation(m_CameraRotation);
         }
