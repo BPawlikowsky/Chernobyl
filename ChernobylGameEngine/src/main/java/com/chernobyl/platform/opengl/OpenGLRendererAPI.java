@@ -12,6 +12,8 @@ public class OpenGLRendererAPI extends RendererAPI {
     public void Init() {
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        glEnable(GL_DEPTH_TEST);
     }
 
     public void SetViewport(int x, int y, int width, int height)

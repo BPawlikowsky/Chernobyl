@@ -17,6 +17,7 @@ public class Renderer2D {
     {
         VertexArray QuadVertexArray;
         Shader FlatColorShader;
+        Shader TextureShader;
     }
 
     static Renderer2DStorage s_Data;
@@ -27,15 +28,16 @@ public class Renderer2D {
         s_Data.QuadVertexArray = VertexArray.Create();
 
         float[] squareVertices = {
-                -0.5f, -0.5f, 0.0f,
-                 0.5f, -0.5f, 0.0f,
-                 0.5f,  0.5f, 0.0f,
-                -0.5f,  0.5f, 0.0f
+                -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
+                 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+                 0.5f,  0.5f, 0.0f, 1.0f, 1.0f,
+                -0.5f,  0.5f, 0.0f, 0.0f, 1.0f
     };
 
         VertexBuffer squareVB = VertexBuffer.Create(squareVertices, squareVertices.length);
         squareVB.SetLayout(new BufferLayout(new BufferElement[]{
-                new BufferElement(ShaderDataType.Float3, "a_Position")
+                new BufferElement(ShaderDataType.Float3, "a_Position"),
+                new BufferElement(ShaderDataType.Float2, "a_TexCoord")
         }));
         s_Data.QuadVertexArray.AddVertexBuffer(squareVB);
 
@@ -45,6 +47,10 @@ public class Renderer2D {
         s_Data.QuadVertexArray.SetIndexBuffer(squareIB);
 
         s_Data.FlatColorShader = Shader.Create("assets/shaders/FlatColor.glsl");
+
+        s_Data.TextureShader = Shader.Create("assets/shaders/Texture.glsl");
+        s_Data.TextureShader.Bind();
+        s_Data.TextureShader.SetInt("u_Texture", 0);
     }
 
     public static void Shutdown()
@@ -55,8 +61,10 @@ public class Renderer2D {
     public static void BeginScene(OrthographicCamera camera)
     {
         s_Data.FlatColorShader.Bind();
-        s_Data.FlatColorShader.UploadUniformMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
-        s_Data.FlatColorShader.UploadUniformMat4("u_Transform", new Mat4(1.0f));
+        s_Data.FlatColorShader.SetMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
+
+        s_Data.TextureShader.Bind();
+        s_Data.TextureShader.SetMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
     }
 
     public static void EndScene()
@@ -72,7 +80,23 @@ public class Renderer2D {
     public static void DrawQuad(Vec3 position, Vec2 size, Vec4 color)
     {
         s_Data.FlatColorShader.Bind();
-        s_Data.FlatColorShader.UploadUniformFloat4("u_Color", color);
+        s_Data.FlatColorShader.SetFloat4("u_Color", color);
+
+        Mat4 transform = new Mat4().translate(position).scale(new Vec3( size.x, size.y, 1.0f ));
+        s_Data.FlatColorShader.SetMat4("u_Transform", transform);
+
+        s_Data.QuadVertexArray.Bind();
+        RenderCommand.DrawIndexed(s_Data.QuadVertexArray);
+    }
+
+    public static void DrawQuad(Vec3 position, Vec2 size, Texture2D texture)
+    {
+        s_Data.TextureShader.Bind();
+
+        Mat4 transform = new Mat4().translate(position).scale(new Vec3( size.x, size.y, 1.0f ));
+        s_Data.FlatColorShader.SetMat4("u_Transform", transform);
+
+        texture.Bind();
 
         s_Data.QuadVertexArray.Bind();
         RenderCommand.DrawIndexed(s_Data.QuadVertexArray);

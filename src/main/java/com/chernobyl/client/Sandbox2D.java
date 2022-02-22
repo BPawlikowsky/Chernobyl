@@ -1,19 +1,16 @@
 package com.chernobyl.client;
 
 import com.chernobyl.gameengine.OrthographicCameraController;
-import com.chernobyl.gameengine.buffer.IndexBuffer;
-import com.chernobyl.gameengine.buffer.VertexBuffer;
 import com.chernobyl.gameengine.core.Timestep;
 import com.chernobyl.gameengine.event.Event;
 import com.chernobyl.gameengine.layer.Layer;
 import com.chernobyl.gameengine.math.Vec2;
+import com.chernobyl.gameengine.math.Vec3;
 import com.chernobyl.gameengine.math.Vec4;
-import com.chernobyl.gameengine.render.BufferElement;
-import com.chernobyl.gameengine.render.BufferLayout;
 import com.chernobyl.gameengine.render.Shader;
-import com.chernobyl.gameengine.render.ShaderDataType;
 import com.chernobyl.gameengine.renderer.RenderCommand;
 import com.chernobyl.gameengine.renderer.Renderer2D;
+import com.chernobyl.gameengine.renderer.Texture2D;
 import com.chernobyl.gameengine.renderer.VertexArray;
 import imgui.ImGui;
 
@@ -25,6 +22,7 @@ public class Sandbox2D extends Layer {
     private Shader m_FlatColorShader;
 
     private Vec4 m_SquareColor = new Vec4( 0.2f, 0.3f, 0.8f, 1.0f );
+    private Texture2D m_CheckerboardTexture;
 
     public Sandbox2D()
     {
@@ -34,26 +32,7 @@ public class Sandbox2D extends Layer {
 
     public void OnAttach()
     {
-        m_SquareVA = VertexArray.Create();
-
-        float[] squareVertices = {
-                -0.5f, -0.5f, 0.0f,
-                 0.5f, -0.5f, 0.0f,
-                 0.5f,  0.5f, 0.0f,
-                -0.5f,  0.5f, 0.0f
-    };
-
-        VertexBuffer squareVB = VertexBuffer.Create(squareVertices, squareVertices.length);
-        squareVB.SetLayout(new BufferLayout(new BufferElement[]{
-                new BufferElement(ShaderDataType.Float3, "a_Position")
-        }));
-        m_SquareVA.AddVertexBuffer(squareVB);
-
-        int[] squareIndices = { 0, 1, 2, 2, 3, 0 };
-        IndexBuffer squareIB = IndexBuffer.Create(squareIndices, squareIndices.length);
-        m_SquareVA.SetIndexBuffer(squareIB);
-
-        m_FlatColorShader =  Shader.Create("assets/shaders/FlatColor.glsl");
+        m_CheckerboardTexture = Texture2D.Create("assets/textures/Checkerboard.png");
     }
 
     public void OnDetach()
@@ -70,7 +49,9 @@ public class Sandbox2D extends Layer {
         RenderCommand.Clear();
 
         Renderer2D.BeginScene(m_CameraController.GetCamera());
-        Renderer2D.DrawQuad(new Vec2( 0.0f, 0.0f ), new Vec2( 1.0f, 1.0f ), new Vec4( 0.8f, 0.2f, 0.3f, 1.0f ));
+        Renderer2D.DrawQuad(new Vec2( -1.0f, 0.0f ), new Vec2( 0.8f, 0.8f ), new Vec4( 0.8f, 0.2f, 0.3f, 1.0f ));
+        Renderer2D.DrawQuad(new Vec2( 0.5f, -0.5f ), new Vec2( 0.5f, 0.75f ), new Vec4( 0.2f, 0.3f, 0.8f, 1.0f ));
+        Renderer2D.DrawQuad(new Vec3( 0.0f, 0.0f, -0.1f ), new Vec2( 10.0f, 10.0f ), m_CheckerboardTexture);
         Renderer2D.EndScene();
     }
 

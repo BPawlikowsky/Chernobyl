@@ -1,6 +1,7 @@
 package com.chernobyl.gameengine.render;
 
 import com.chernobyl.gameengine.math.Mat4;
+import com.chernobyl.gameengine.math.Vec3;
 import com.chernobyl.gameengine.math.Vec4;
 import com.chernobyl.gameengine.renderer.Renderer;
 import com.chernobyl.platform.opengl.OpenGLShader;
@@ -37,7 +38,8 @@ public abstract class Shader {
 
     public abstract String GetName();
 
-    public abstract void UploadUniformFloat4(String u_color, Vec4 m_squareColor);
-
-    public abstract void UploadUniformMat4(String u_viewProjection, Mat4 getViewProjectionMatrix);
+    public abstract void SetInt(String name, int value);
+    public abstract void SetFloat3(String name, Vec3 value);
+    public abstract void SetFloat4(String name, Vec4 value);
+    public abstract void SetMat4(String name, Mat4 value);
 }

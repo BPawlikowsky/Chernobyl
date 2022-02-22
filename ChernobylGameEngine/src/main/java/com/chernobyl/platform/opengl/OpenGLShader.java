@@ -8,7 +8,6 @@ import java.util.HashMap;
 
 import static com.chernobyl.gameengine.Asserts.HB_CORE_ASSERT;
 import static com.chernobyl.gameengine.Log.HB_CORE_ERROR;
-import static com.chernobyl.gameengine.Log.HB_CORE_INFO;
 import static org.lwjgl.opengl.GL11.GL_FALSE;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL20.glUniformMatrix4fv;
@@ -182,6 +181,27 @@ public class OpenGLShader extends Shader {
     @Override
     public String GetName() {
         return m_Name;
+    }
+
+    @Override
+    public void SetInt(String name, int value) {
+        UploadUniformInt(name, value);
+    }
+
+    @Override
+    public void SetFloat3(String name, Vec3 value) {
+        UploadUniformFloat3(name, value);
+    }
+
+    @Override
+    public void SetFloat4(String name, Vec4 value) {
+        UploadUniformFloat4(name, value);
+    }
+
+    @Override
+    public void SetMat4(String name, Mat4 value) {
+        UploadUniformMat4(name, value);
+
     }
 
     public void UploadUniformInt(String name, int value) {
