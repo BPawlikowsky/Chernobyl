@@ -6,15 +6,14 @@ import com.chernobyl.gameengine.buffer.VertexBuffer;
 import com.chernobyl.gameengine.core.Timestep;
 import com.chernobyl.gameengine.event.Event;
 import com.chernobyl.gameengine.layer.Layer;
-import com.chernobyl.gameengine.math.Mat4;
-import com.chernobyl.gameengine.math.Vec3;
+import com.chernobyl.gameengine.math.Vec2;
 import com.chernobyl.gameengine.math.Vec4;
 import com.chernobyl.gameengine.render.BufferElement;
 import com.chernobyl.gameengine.render.BufferLayout;
 import com.chernobyl.gameengine.render.Shader;
 import com.chernobyl.gameengine.render.ShaderDataType;
 import com.chernobyl.gameengine.renderer.RenderCommand;
-import com.chernobyl.gameengine.renderer.Renderer;
+import com.chernobyl.gameengine.renderer.Renderer2D;
 import com.chernobyl.gameengine.renderer.VertexArray;
 import imgui.ImGui;
 
@@ -70,14 +69,9 @@ public class Sandbox2D extends Layer {
         RenderCommand.SetClearColor(new Vec4( 0.1f, 0.1f, 0.1f, 1 ));
         RenderCommand.Clear();
 
-        Renderer.BeginScene(m_CameraController.GetCamera());
-
-        m_FlatColorShader.Bind();
-        m_FlatColorShader.UploadUniformFloat4("u_Color", m_SquareColor);
-
-        Renderer.Submit(m_FlatColorShader, m_SquareVA, new Mat4().scale(new Vec3(1.5f)));
-
-        Renderer.EndScene();
+        Renderer2D.BeginScene(m_CameraController.GetCamera());
+        Renderer2D.DrawQuad(new Vec2( 0.0f, 0.0f ), new Vec2( 1.0f, 1.0f ), new Vec4( 0.8f, 0.2f, 0.3f, 1.0f ));
+        Renderer2D.EndScene();
     }
 
     public void OnImGuiRender()

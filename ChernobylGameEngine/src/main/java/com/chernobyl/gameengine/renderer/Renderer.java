@@ -8,6 +8,7 @@ import com.chernobyl.platform.opengl.OpenGLShader;
 public class Renderer {
     public static void Init() {
         RenderCommand.Init();
+        Renderer2D.Init();
     }
 
     private static class SceneData {
