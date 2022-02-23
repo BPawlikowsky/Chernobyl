@@ -6,8 +6,8 @@ import com.chernobyl.gameengine.render.Shader;
 import java.io.*;
 import java.util.HashMap;
 
-import static com.chernobyl.gameengine.Asserts.HB_CORE_ASSERT;
-import static com.chernobyl.gameengine.Log.HB_CORE_ERROR;
+import static com.chernobyl.gameengine.core.Asserts.HB_CORE_ASSERT;
+import static com.chernobyl.gameengine.core.Log.HB_CORE_ERROR;
 import static org.lwjgl.opengl.GL11.GL_FALSE;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL20.glUniformMatrix4fv;

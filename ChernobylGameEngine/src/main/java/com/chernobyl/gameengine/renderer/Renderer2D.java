@@ -1,6 +1,5 @@
 package com.chernobyl.gameengine.renderer;
 
-import com.chernobyl.gameengine.OrthographicCamera;
 import com.chernobyl.gameengine.buffer.IndexBuffer;
 import com.chernobyl.gameengine.buffer.VertexBuffer;
 import com.chernobyl.gameengine.math.Mat4;

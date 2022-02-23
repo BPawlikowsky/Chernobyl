@@ -1,6 +1,6 @@
 package com.chernobyl.client;
 
-import com.chernobyl.gameengine.Application;
+import com.chernobyl.gameengine.core.Application;
 import com.chernobyl.gameengine.EntryPoint;
 
 public class Client extends Application {

@@ -1,9 +1,9 @@
 package com.chernobyl.client;
 
-import com.chernobyl.gameengine.OrthographicCameraController;
+import com.chernobyl.gameengine.renderer.OrthographicCameraController;
 import com.chernobyl.gameengine.core.Timestep;
-import com.chernobyl.gameengine.event.Event;
-import com.chernobyl.gameengine.layer.Layer;
+import com.chernobyl.gameengine.core.Event;
+import com.chernobyl.gameengine.core.layer.Layer;
 import com.chernobyl.gameengine.math.Vec2;
 import com.chernobyl.gameengine.math.Vec3;
 import com.chernobyl.gameengine.math.Vec4;

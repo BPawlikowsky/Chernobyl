@@ -2,7 +2,7 @@ package com.chernobyl.gameengine.render;
 
 import lombok.Getter;
 
-import static com.chernobyl.gameengine.Asserts.HB_CORE_ASSERT;
+import static com.chernobyl.gameengine.core.Asserts.HB_CORE_ASSERT;
 import static com.chernobyl.gameengine.render.ShaderDataType.ShaderDataTypeSize;
 
 public class BufferElement {

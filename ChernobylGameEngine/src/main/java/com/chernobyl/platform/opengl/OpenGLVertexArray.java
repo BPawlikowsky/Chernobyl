@@ -7,7 +7,7 @@ import com.chernobyl.gameengine.renderer.VertexArray;
 
 import java.util.Vector;
 
-import static com.chernobyl.gameengine.Asserts.HB_CORE_ASSERT;
+import static com.chernobyl.gameengine.core.Asserts.HB_CORE_ASSERT;
 import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.opengl.GL45.glCreateVertexArrays;
 

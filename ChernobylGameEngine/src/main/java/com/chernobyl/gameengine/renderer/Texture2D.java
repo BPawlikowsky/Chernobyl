@@ -2,7 +2,7 @@ package com.chernobyl.gameengine.renderer;
 
 import com.chernobyl.platform.opengl.OpenGLTexture2D;
 
-import static com.chernobyl.gameengine.Asserts.HB_CORE_ASSERT;
+import static com.chernobyl.gameengine.core.Asserts.HB_CORE_ASSERT;
 
 public abstract class Texture2D extends Texture{
 

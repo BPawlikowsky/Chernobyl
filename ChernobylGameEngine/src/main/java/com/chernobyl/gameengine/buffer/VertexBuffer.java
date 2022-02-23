@@ -4,7 +4,7 @@ import com.chernobyl.gameengine.render.BufferLayout;
 import com.chernobyl.gameengine.renderer.Renderer;
 import com.chernobyl.platform.opengl.openglbuffer.OpenGLVertexBuffer;
 
-import static com.chernobyl.gameengine.Asserts.HB_CORE_ASSERT;
+import static com.chernobyl.gameengine.core.Asserts.HB_CORE_ASSERT;
 
 public abstract class VertexBuffer {
     public abstract BufferLayout GetLayout();

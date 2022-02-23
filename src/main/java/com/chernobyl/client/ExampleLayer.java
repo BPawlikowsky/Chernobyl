@@ -1,11 +1,11 @@
 package com.chernobyl.client;
 
 
-import com.chernobyl.gameengine.OrthographicCameraController;
+import com.chernobyl.gameengine.renderer.OrthographicCameraController;
 import com.chernobyl.gameengine.buffer.IndexBuffer;
 import com.chernobyl.gameengine.buffer.VertexBuffer;
-import com.chernobyl.gameengine.event.Event;
-import com.chernobyl.gameengine.layer.Layer;
+import com.chernobyl.gameengine.core.Event;
+import com.chernobyl.gameengine.core.layer.Layer;
 import com.chernobyl.gameengine.math.Mat4;
 import com.chernobyl.gameengine.math.Vec3;
 import com.chernobyl.gameengine.math.Vec4;
@@ -23,7 +23,7 @@ class ExampleLayer extends Layer {
     private final VertexArray m_VertexArray;
     private final VertexArray m_SquareVA;
 
-    private OrthographicCameraController m_CameraController;
+    private final OrthographicCameraController m_CameraController;
 
     private Vec3 m_SquareColor = new Vec3( 0.2f, 0.3f, 0.8f );
     private final Texture2D m_Texture, m_ChernoLogoTexture;

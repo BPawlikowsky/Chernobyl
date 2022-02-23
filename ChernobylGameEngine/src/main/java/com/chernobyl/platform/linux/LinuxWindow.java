@@ -1,16 +1,16 @@
 package com.chernobyl.platform.linux;
 
-import com.chernobyl.gameengine.event.*;
+import com.chernobyl.gameengine.events.*;
 import com.chernobyl.gameengine.render.GraphicsContext;
-import com.chernobyl.gameengine.window.IEventCallback;
-import com.chernobyl.gameengine.window.Window;
-import com.chernobyl.gameengine.window.WindowProps;
-import com.chernobyl.platform.opengl.OpenGlContext;
+import com.chernobyl.gameengine.core.window.IEventCallback;
+import com.chernobyl.gameengine.core.window.Window;
+import com.chernobyl.gameengine.core.window.WindowProps;
+import com.chernobyl.platform.opengl.OpenGLContext;
 import org.lwjgl.glfw.GLFWErrorCallback;
 
-import static com.chernobyl.gameengine.Asserts.HB_CORE_ASSERT;
-import static com.chernobyl.gameengine.Log.HB_CORE_ERROR;
-import static com.chernobyl.gameengine.Log.HB_CORE_INFO;
+import static com.chernobyl.gameengine.core.Asserts.HB_CORE_ASSERT;
+import static com.chernobyl.gameengine.core.Log.HB_CORE_ERROR;
+import static com.chernobyl.gameengine.core.Log.HB_CORE_INFO;
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
@@ -75,7 +75,7 @@ public class LinuxWindow extends Window {
 
         HB_CORE_ASSERT(nativeWindow != NULL, "Could not create GLFW window.");
 
-        m_Context = new OpenGlContext(nativeWindow);
+        m_Context = OpenGLContext.Create(nativeWindow);
         m_Context.Init();
 
         SetVSync(true);
@@ -99,7 +99,7 @@ public class LinuxWindow extends Window {
 
         glfwSetKeyCallback(nativeWindow, (long window, int key, int scancode, int action, int mods) ->
         {
-            
+
 
             switch (action)
             {

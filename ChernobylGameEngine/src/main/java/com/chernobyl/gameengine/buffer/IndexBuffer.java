@@ -3,7 +3,7 @@ package com.chernobyl.gameengine.buffer;
 import com.chernobyl.gameengine.renderer.Renderer;
 import com.chernobyl.platform.opengl.openglbuffer.OpenGLIndexBuffer;
 
-import static com.chernobyl.gameengine.Asserts.HB_CORE_ASSERT;
+import static com.chernobyl.gameengine.core.Asserts.HB_CORE_ASSERT;
 
 public abstract class IndexBuffer {
     public abstract void Bind();

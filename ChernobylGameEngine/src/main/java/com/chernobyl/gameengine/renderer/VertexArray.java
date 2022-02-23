@@ -6,7 +6,7 @@ import com.chernobyl.platform.opengl.OpenGLVertexArray;
 
 import java.util.Vector;
 
-import static com.chernobyl.gameengine.Asserts.HB_CORE_ASSERT;
+import static com.chernobyl.gameengine.core.Asserts.HB_CORE_ASSERT;
 
 public abstract class VertexArray {
     public abstract void destroy();

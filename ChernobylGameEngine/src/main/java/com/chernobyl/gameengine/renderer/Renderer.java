@@ -1,6 +1,5 @@
 package com.chernobyl.gameengine.renderer;
 
-import com.chernobyl.gameengine.OrthographicCamera;
 import com.chernobyl.gameengine.math.Mat4;
 import com.chernobyl.gameengine.render.Shader;
 import com.chernobyl.platform.opengl.OpenGLShader;
@@ -9,6 +8,10 @@ public class Renderer {
     public static void Init() {
         RenderCommand.Init();
         Renderer2D.Init();
+    }
+
+    public static void Shutdown() {
+        Renderer2D.Shutdown();
     }
 
     private static class SceneData {

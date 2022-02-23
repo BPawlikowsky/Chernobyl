@@ -2,7 +2,7 @@ package com.chernobyl.gameengine.render;
 
 import java.util.HashMap;
 
-import static com.chernobyl.gameengine.Asserts.HB_CORE_ASSERT;
+import static com.chernobyl.gameengine.core.Asserts.HB_CORE_ASSERT;
 
 public class ShaderLibrary {
     private final HashMap<String, Shader> m_Shaders = new HashMap<>();
