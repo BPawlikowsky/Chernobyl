@@ -7,7 +7,6 @@ import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
 import static com.chernobyl.gameengine.Asserts.HB_CORE_ASSERT;
-import static com.chernobyl.gameengine.Log.HB_CORE_INFO;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL45.*;
 import static org.lwjgl.stb.STBImage.*;
@@ -17,6 +16,7 @@ public class OpenGLTexture2D extends Texture2D {
     private final int m_Width;
     private final int m_Height;
     private final int m_RendererID;
+    int m_InternalFormat, m_DataFormat;
 
     public OpenGLTexture2D(String path) {
         IntBuffer width, height, channels;
@@ -44,6 +44,9 @@ public class OpenGLTexture2D extends Texture2D {
             dataFormat = GL_RGB;
         }
 
+        m_InternalFormat = internalFormat;
+        m_DataFormat = dataFormat;
+
         HB_CORE_ASSERT(internalFormat != 0 && dataFormat != 0, "Format not supported!");
 
         m_RendererID = glCreateTextures(GL_TEXTURE_2D);
@@ -60,6 +63,22 @@ public class OpenGLTexture2D extends Texture2D {
         stbi_image_free(data);
     }
 
+    public OpenGLTexture2D(int width, int height) {
+        m_Width = width;
+        m_Height = height;
+        m_InternalFormat = GL_RGBA8;
+        m_DataFormat = GL_RGBA;
+
+        m_RendererID = glCreateTextures(GL_TEXTURE_2D);
+        glTextureStorage2D(m_RendererID, 1, m_InternalFormat, m_Width, m_Height);
+
+        glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+        glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    }
+
     @Override
     public void destroy() {
         glDeleteTextures(m_RendererID);
@@ -73,6 +92,13 @@ public class OpenGLTexture2D extends Texture2D {
     @Override
     public int GetHeight() {
         return m_Height;
+    }
+
+    @Override
+    public void SetData(long data, int size) {
+        int bpp = m_DataFormat == GL_RGBA ? 4 : 3;
+        HB_CORE_ASSERT(size == m_Width * m_Height * bpp, "Data must be entire texture!");
+        glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Width, m_Height, m_DataFormat, GL_UNSIGNED_BYTE, data);
     }
 
     @Override

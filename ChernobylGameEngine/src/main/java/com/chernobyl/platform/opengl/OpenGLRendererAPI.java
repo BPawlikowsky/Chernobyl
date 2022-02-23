@@ -34,5 +34,6 @@ public class OpenGLRendererAPI extends RendererAPI {
     public void DrawIndexed(VertexArray vertexArray)
     {
         glDrawElements(GL_TRIANGLES, vertexArray.GetIndexBuffer().GetCount(), GL_UNSIGNED_INT, NULL);
+        glBindTexture(GL_TEXTURE_2D, 0);
     }
 }

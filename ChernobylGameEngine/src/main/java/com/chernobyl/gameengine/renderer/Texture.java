@@ -6,6 +6,8 @@ public abstract class Texture {
     public abstract int GetWidth();
     public abstract int GetHeight();
 
+    public abstract void SetData(long data, int size);
+
     public abstract void Bind();
     public abstract void Bind(int slot);
 }

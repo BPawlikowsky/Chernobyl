@@ -11,13 +11,17 @@ import com.chernobyl.gameengine.render.BufferElement;
 import com.chernobyl.gameengine.render.BufferLayout;
 import com.chernobyl.gameengine.render.Shader;
 import com.chernobyl.gameengine.render.ShaderDataType;
+import org.lwjgl.system.MemoryStack;
+import org.lwjgl.system.MemoryUtil;
+
+import java.nio.ByteBuffer;
 
 public class Renderer2D {
     static class Renderer2DStorage
     {
         VertexArray QuadVertexArray;
-        Shader FlatColorShader;
         Shader TextureShader;
+        Texture2D WhiteTexture;
     }
 
     static Renderer2DStorage s_Data;
@@ -41,12 +45,21 @@ public class Renderer2D {
         }));
         s_Data.QuadVertexArray.AddVertexBuffer(squareVB);
 
+
         int[] squareIndices = { 0, 1, 2, 2, 3, 0 };
         IndexBuffer
         squareIB = IndexBuffer.Create(squareIndices, squareIndices.length);
         s_Data.QuadVertexArray.SetIndexBuffer(squareIB);
 
-        s_Data.FlatColorShader = Shader.Create("assets/shaders/FlatColor.glsl");
+        s_Data.WhiteTexture = Texture2D.Create(1, 1);
+        int whiteTextureData = 0xffffffff;
+        ByteBuffer buf;
+        try(MemoryStack stack = MemoryStack.stackPush()) {
+            buf = stack.calloc(4);
+            buf.putInt(whiteTextureData);
+            buf.flip();
+        }
+        s_Data.WhiteTexture.SetData(MemoryUtil.memAddress(buf), Integer.BYTES);
 
         s_Data.TextureShader = Shader.Create("assets/shaders/Texture.glsl");
         s_Data.TextureShader.Bind();
@@ -60,9 +73,6 @@ public class Renderer2D {
 
     public static void BeginScene(OrthographicCamera camera)
     {
-        s_Data.FlatColorShader.Bind();
-        s_Data.FlatColorShader.SetMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
-
         s_Data.TextureShader.Bind();
         s_Data.TextureShader.SetMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
     }
@@ -79,11 +89,11 @@ public class Renderer2D {
 
     public static void DrawQuad(Vec3 position, Vec2 size, Vec4 color)
     {
-        s_Data.FlatColorShader.Bind();
-        s_Data.FlatColorShader.SetFloat4("u_Color", color);
+        s_Data.TextureShader.SetFloat4("u_Color", color);
+        s_Data.WhiteTexture.Bind();
 
         Mat4 transform = new Mat4().translate(position).scale(new Vec3( size.x, size.y, 1.0f ));
-        s_Data.FlatColorShader.SetMat4("u_Transform", transform);
+        s_Data.TextureShader.SetMat4("u_Transform", transform);
 
         s_Data.QuadVertexArray.Bind();
         RenderCommand.DrawIndexed(s_Data.QuadVertexArray);
@@ -91,12 +101,11 @@ public class Renderer2D {
 
     public static void DrawQuad(Vec3 position, Vec2 size, Texture2D texture)
     {
-        s_Data.TextureShader.Bind();
+        s_Data.TextureShader.SetFloat4("u_Color", new Vec4(1.0f));
+        texture.Bind();
 
         Mat4 transform = new Mat4().translate(position).scale(new Vec3( size.x, size.y, 1.0f ));
-        s_Data.FlatColorShader.SetMat4("u_Transform", transform);
-
-        texture.Bind();
+        s_Data.TextureShader.SetMat4("u_Transform", transform);
 
         s_Data.QuadVertexArray.Bind();
         RenderCommand.DrawIndexed(s_Data.QuadVertexArray);
