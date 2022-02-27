@@ -13,6 +13,8 @@ import imgui.glfw.ImGuiImplGlfw;
 import imgui.internal.ImGuiContext;
 
 import static com.chernobyl.gameengine.core.Asserts.HB_ASSERT;
+import static com.chernobyl.gameengine.core.Instrumentor.HB_PROFILE_FUNCTION;
+import static com.chernobyl.gameengine.core.Instrumentor.HB_PROFILE_FUNCTION_STOP;
 import static com.chernobyl.gameengine.core.Log.HB_CORE_INFO;
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -30,6 +32,8 @@ public class ImGuiLayer extends Layer {
 
     @Override
     public void OnAttach() {
+        HB_PROFILE_FUNCTION();
+
         HB_CORE_INFO("ImGui version {0}", ImGui.getVersion());
         ImGuiContext ctx = ImGui.createContext();
         ImGui.setCurrentContext(ctx);
@@ -55,18 +59,26 @@ public class ImGuiLayer extends Layer {
         }
         imGuiImplGlfw.init(window, true);
         imGuiImplGl3.init("#version 410");
+
+        HB_PROFILE_FUNCTION_STOP();
     }
 
     public void Begin()
     {
+        HB_PROFILE_FUNCTION();
+
         ImGuiIO io = ImGui.getIO();
         io.setDisplaySize(Application.getM_Window().getWidth(), Application.getM_Window().getHeight());
         imGuiImplGlfw.newFrame();
         ImGui.newFrame();
+
+        HB_PROFILE_FUNCTION_STOP();
     }
 
     public void End()
     {
+        HB_PROFILE_FUNCTION();
+
         ImGuiIO io = ImGui.getIO();
         io.setDisplaySize(Application.getM_Window().getWidth(), Application.getM_Window().getHeight());
 
@@ -81,6 +93,8 @@ public class ImGuiLayer extends Layer {
             ImGui.renderPlatformWindowsDefault();
             glfwMakeContextCurrent(backup_current_context);
         }
+
+        HB_PROFILE_FUNCTION_STOP();
     }
 
     public void OnImGuiRender()
@@ -89,9 +103,13 @@ public class ImGuiLayer extends Layer {
 
     @Override
     public void OnDetach() {
+        HB_PROFILE_FUNCTION();
+
         imGuiImplGl3.dispose();
         imGuiImplGlfw.dispose();
         ImGui.destroyContext();
+
+        HB_PROFILE_FUNCTION_STOP();
     }
 
     @Override

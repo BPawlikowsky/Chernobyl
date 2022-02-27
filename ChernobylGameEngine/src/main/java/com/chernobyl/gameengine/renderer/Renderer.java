@@ -4,10 +4,17 @@ import com.chernobyl.gameengine.math.Mat4;
 import com.chernobyl.gameengine.render.Shader;
 import com.chernobyl.platform.opengl.OpenGLShader;
 
+import static com.chernobyl.gameengine.core.Instrumentor.HB_PROFILE_FUNCTION;
+import static com.chernobyl.gameengine.core.Instrumentor.HB_PROFILE_FUNCTION_STOP;
+
 public class Renderer {
     public static void Init() {
+        HB_PROFILE_FUNCTION();
+
         RenderCommand.Init();
         Renderer2D.Init();
+
+        HB_PROFILE_FUNCTION_STOP();
     }
 
     public static void Shutdown() {

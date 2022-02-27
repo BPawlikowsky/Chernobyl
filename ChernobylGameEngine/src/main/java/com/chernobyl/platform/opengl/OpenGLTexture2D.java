@@ -7,6 +7,7 @@ import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
 import static com.chernobyl.gameengine.core.Asserts.HB_CORE_ASSERT;
+import static com.chernobyl.gameengine.core.Instrumentor.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL45.*;
 import static org.lwjgl.stb.STBImage.*;
@@ -19,8 +20,11 @@ public class OpenGLTexture2D extends Texture2D {
     int m_InternalFormat, m_DataFormat;
 
     public OpenGLTexture2D(String path) {
+        HB_PROFILE_FUNCTION();
+
         IntBuffer width, height, channels;
         ByteBuffer data;
+        HB_PROFILE_SCOPE("stbi_load - OpenGLTexture2D::OpenGLTexture2D(const std:string&)");
         try (MemoryStack stack = MemoryStack.stackPush()) {
             width = stack.callocInt(1);
             height = stack.callocInt(1);
@@ -28,6 +32,7 @@ public class OpenGLTexture2D extends Texture2D {
             stbi_set_flip_vertically_on_load(true);
             data = stbi_load(path, width, height, channels, 0);
         }
+        HB_PROFILE_SCOPE_STOP("stbi_load - OpenGLTexture2D::OpenGLTexture2D(const std:string&)");
         HB_CORE_ASSERT(data != null, "Failed to load image!");
         m_Width = width.get(0);
         m_Height = height.get(0);
@@ -61,9 +66,13 @@ public class OpenGLTexture2D extends Texture2D {
         glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Width, m_Height, dataFormat, GL_UNSIGNED_BYTE, data);
 
         stbi_image_free(data);
+
+        HB_PROFILE_FUNCTION_STOP();
     }
 
     public OpenGLTexture2D(int width, int height) {
+        HB_PROFILE_FUNCTION();
+
         m_Width = width;
         m_Height = height;
         m_InternalFormat = GL_RGBA8;
@@ -77,11 +86,17 @@ public class OpenGLTexture2D extends Texture2D {
 
         glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_S, GL_REPEAT);
         glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+        HB_PROFILE_FUNCTION_STOP();
     }
 
     @Override
     public void destroy() {
+        HB_PROFILE_FUNCTION();
+
         glDeleteTextures(m_RendererID);
+
+        HB_PROFILE_FUNCTION_STOP();
     }
 
     @Override
@@ -96,19 +111,31 @@ public class OpenGLTexture2D extends Texture2D {
 
     @Override
     public void SetData(long data, int size) {
+        HB_PROFILE_FUNCTION();
+
         int bpp = m_DataFormat == GL_RGBA ? 4 : 3;
         HB_CORE_ASSERT(size == m_Width * m_Height * bpp, "Data must be entire texture!");
         glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Width, m_Height, m_DataFormat, GL_UNSIGNED_BYTE, data);
+
+        HB_PROFILE_FUNCTION_STOP();
     }
 
     @Override
     public void Bind() {
+        HB_PROFILE_FUNCTION();
+
         glBindTextureUnit(0, m_RendererID);
+
+        HB_PROFILE_FUNCTION_STOP();
 
     }
 
     @Override
     public void Bind(int slot) {
+        HB_PROFILE_FUNCTION();
+
         glBindTextureUnit(slot, m_RendererID);
+
+        HB_PROFILE_FUNCTION_STOP();
     }
 }

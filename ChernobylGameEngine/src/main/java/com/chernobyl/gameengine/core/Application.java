@@ -13,6 +13,7 @@ import com.chernobyl.gameengine.core.window.Window;
 import lombok.Getter;
 
 import static com.chernobyl.gameengine.core.Asserts.HB_CORE_ASSERT;
+import static com.chernobyl.gameengine.core.Instrumentor.*;
 import static org.lwjgl.glfw.GLFW.glfwGetTime;
 
 public class Application {
@@ -30,6 +31,7 @@ public class Application {
     private boolean m_Minimized = false;
 
     public Application() {
+        HB_PROFILE_FUNCTION();
 
         HB_CORE_ASSERT(s_Instance == null, "Application already exists!");
 
@@ -41,6 +43,7 @@ public class Application {
         m_ImGuiLayer = new ImGuiLayer();
         pushOverlay(m_ImGuiLayer);
 
+        HB_PROFILE_FUNCTION_STOP();
     }
 
     public void destroy() {
@@ -55,28 +58,45 @@ public class Application {
     }
 
     public void Run() {
+        HB_PROFILE_FUNCTION();
+
         while (m_Running) {
+            HB_PROFILE_SCOPE("RunLoop");
 
             float time = (float) glfwGetTime();
             Timestep timestep = new Timestep(time - m_LastFrameTime);
             m_LastFrameTime = time;
 
             if (!m_Minimized) {
+                HB_PROFILE_SCOPE("LayerStack OnUpdate");
+
                 for (Layer layer : m_LayerStack)
                     layer.OnUpdate(timestep);
+
+                HB_PROFILE_SCOPE_STOP("LayerStack OnUpdate");
             }
+
+            HB_PROFILE_SCOPE("LayerStack OnImGuiRender");
 
             m_ImGuiLayer.Begin();
             for (Layer layer : m_LayerStack)
                 layer.OnImGuiRender();
             m_ImGuiLayer.End();
 
+            HB_PROFILE_SCOPE_STOP("LayerStack OnImGuiRender");
+
             m_Window.OnUpdate();
+
+            HB_PROFILE_SCOPE_STOP("RunLoop");
         }
         m_Window.Shutdown();
+
+        HB_PROFILE_FUNCTION_STOP();
     }
 
     private void onEvent(Event e) {
+        HB_PROFILE_FUNCTION();
+
         EventDispatcher dispatcher = new EventDispatcher(e);
         dispatcher.Dispatch(this::OnWindowClose, EventType.WindowClose);
         dispatcher.Dispatch(this::OnWindowResize, EventType.WindowResize);
@@ -85,14 +105,24 @@ public class Application {
             m_LayerStack.get(i).OnEvent(e);
             if (e.isM_Handled()) break;
         }
+
+        HB_PROFILE_FUNCTION_STOP();
     }
 
     public void pushLayer(Layer layer) {
+        HB_PROFILE_FUNCTION();
+
         m_LayerStack.PushLayer(layer);
+
+        HB_PROFILE_FUNCTION_STOP();
     }
 
     public void pushOverlay(Layer overlay) {
+        HB_PROFILE_FUNCTION();
+
         m_LayerStack.PushOverlay(overlay);
+
+        HB_PROFILE_FUNCTION_STOP();
     }
 
     private boolean OnWindowClose(WindowCloseEvent e) {
@@ -101,6 +131,8 @@ public class Application {
     }
 
     private boolean OnWindowResize(WindowResizeEvent e) {
+        HB_PROFILE_FUNCTION();
+
         if (e.getWidth() == 0 || e.getHeight() == 0) {
             m_Minimized = true;
             return false;
@@ -108,6 +140,8 @@ public class Application {
 
         m_Minimized = false;
         Renderer.OnWindowResize(e.getWidth(), e.getHeight());
+
+        HB_PROFILE_FUNCTION_STOP();
 
         return false;
     }

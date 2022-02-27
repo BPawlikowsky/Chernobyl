@@ -4,6 +4,8 @@ import com.chernobyl.gameengine.render.GraphicsContext;
 import org.lwjgl.opengl.GL;
 
 import static com.chernobyl.gameengine.core.Asserts.HB_CORE_ASSERT;
+import static com.chernobyl.gameengine.core.Instrumentor.HB_PROFILE_FUNCTION;
+import static com.chernobyl.gameengine.core.Instrumentor.HB_PROFILE_FUNCTION_STOP;
 import static com.chernobyl.gameengine.core.Log.HB_CORE_INFO;
 import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
 import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
@@ -19,6 +21,8 @@ public class OpenGLContext extends GraphicsContext {
 
     @Override
     public void Init() {
+        HB_PROFILE_FUNCTION();
+
         glfwMakeContextCurrent(m_WindowHandle);
         GL.createCapabilities();
 
@@ -26,10 +30,16 @@ public class OpenGLContext extends GraphicsContext {
         HB_CORE_INFO("  Vendor: {0}", glGetString(GL_VENDOR));
         HB_CORE_INFO("  Renderer: {0}", glGetString(GL_RENDERER));
         HB_CORE_INFO("  Version: {0}", glGetString(GL_VERSION));
+
+        HB_PROFILE_FUNCTION_STOP();
     }
 
     @Override
     public void SwapBuffers() {
+        HB_PROFILE_FUNCTION();
+
         glfwSwapBuffers(m_WindowHandle);
+
+        HB_PROFILE_FUNCTION_STOP();
     }
 }

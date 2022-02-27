@@ -7,6 +7,8 @@ import java.io.*;
 import java.util.HashMap;
 
 import static com.chernobyl.gameengine.core.Asserts.HB_CORE_ASSERT;
+import static com.chernobyl.gameengine.core.Instrumentor.HB_PROFILE_FUNCTION;
+import static com.chernobyl.gameengine.core.Instrumentor.HB_PROFILE_FUNCTION_STOP;
 import static com.chernobyl.gameengine.core.Log.HB_CORE_ERROR;
 import static org.lwjgl.opengl.GL11.GL_FALSE;
 import static org.lwjgl.opengl.GL20.*;
@@ -17,6 +19,8 @@ public class OpenGLShader extends Shader {
     private final String m_Name;
 
     public OpenGLShader(String filepath) {
+        HB_PROFILE_FUNCTION();
+
         String source = ReadFile(filepath);
         var shaderSources = PreProcess(source);
         Compile(shaderSources);
@@ -26,14 +30,20 @@ public class OpenGLShader extends Shader {
         lastSlash = lastSlash == filepath.length() - 1 ? 0 : lastSlash + 1;
         var lastDot = filepath.lastIndexOf('.');
         m_Name = filepath.substring(lastSlash, lastDot);
+
+        HB_PROFILE_FUNCTION_STOP();
     }
 
     public OpenGLShader(String name, String vertexSrc, String fragmentSrc) {
+        HB_PROFILE_FUNCTION();
+
         m_Name = name;
         HashMap<Integer, String> sources = new HashMap<>();
         sources.put(GL_VERTEX_SHADER, vertexSrc);
         sources.put(GL_FRAGMENT_SHADER, fragmentSrc);
         Compile(sources);
+
+        HB_PROFILE_FUNCTION_STOP();
     }
 
     static int ShaderTypeFromString(String type) {
@@ -47,6 +57,8 @@ public class OpenGLShader extends Shader {
     }
 
     String ReadFile(String filepath) {
+        HB_PROFILE_FUNCTION();
+
         File file = new File(filepath);
         StringBuilder result = new StringBuilder((int) file.length());
 
@@ -62,10 +74,15 @@ public class OpenGLShader extends Shader {
             HB_CORE_ERROR("Could not read file '{0}', exception: {1}", filepath, e);
         }
         HB_CORE_ASSERT(!result.isEmpty(), "Shader Empty!!");
+
+        HB_PROFILE_FUNCTION_STOP();
+
         return result.toString();
     }
 
     HashMap<Integer, String> PreProcess(String source) {
+        HB_PROFILE_FUNCTION();
+
         HashMap<Integer, String> shaderSources = new HashMap<>();
 
         String typeToken = "#type";
@@ -90,10 +107,14 @@ public class OpenGLShader extends Shader {
             shaderSources.put(ShaderTypeFromString(type), shader);
         }
 
+        HB_PROFILE_FUNCTION_STOP();
+
         return shaderSources;
     }
 
     void Compile(HashMap<Integer, String> shaderSources) {
+        HB_PROFILE_FUNCTION();
+
         int program = glCreateProgram();
         HB_CORE_ASSERT(shaderSources.size() <= 2, "We only support 2 shaders for now");
         int[] glShaderIDs = new int[2];
@@ -163,19 +184,33 @@ public class OpenGLShader extends Shader {
             glDetachShader(program, id);
             glDeleteShader(id);
         }
+
+        HB_PROFILE_FUNCTION_STOP();
     }
 
 
     public void destroy() {
+        HB_PROFILE_FUNCTION();
+
         glDeleteProgram(m_RendererID);
+
+        HB_PROFILE_FUNCTION_STOP();
     }
 
     public void Bind() {
+        HB_PROFILE_FUNCTION();
+
         glUseProgram(m_RendererID);
+
+        HB_PROFILE_FUNCTION_STOP();
     }
 
     public void Unbind() {
+        HB_PROFILE_FUNCTION();
+
         glUseProgram(0);
+
+        HB_PROFILE_FUNCTION_STOP();
     }
 
     @Override
@@ -185,22 +220,38 @@ public class OpenGLShader extends Shader {
 
     @Override
     public void SetInt(String name, int value) {
+        HB_PROFILE_FUNCTION();
+
         UploadUniformInt(name, value);
+
+        HB_PROFILE_FUNCTION_STOP();
     }
 
     @Override
     public void SetFloat3(String name, Vec3 value) {
+        HB_PROFILE_FUNCTION();
+
         UploadUniformFloat3(name, value);
+
+        HB_PROFILE_FUNCTION_STOP();
     }
 
     @Override
     public void SetFloat4(String name, Vec4 value) {
+        HB_PROFILE_FUNCTION();
+
         UploadUniformFloat4(name, value);
+
+        HB_PROFILE_FUNCTION_STOP();
     }
 
     @Override
     public void SetMat4(String name, Mat4 value) {
+        HB_PROFILE_FUNCTION();
+
         UploadUniformMat4(name, value);
+
+        HB_PROFILE_FUNCTION_STOP();
 
     }
 

@@ -7,6 +7,7 @@ import com.chernobyl.platform.opengl.openglbuffer.OpenGLVertexBuffer;
 import static com.chernobyl.gameengine.core.Asserts.HB_CORE_ASSERT;
 
 public abstract class VertexBuffer {
+    abstract public void destroy();
     public abstract BufferLayout GetLayout();
     public abstract void SetLayout(BufferLayout layout);
     public abstract void Bind();

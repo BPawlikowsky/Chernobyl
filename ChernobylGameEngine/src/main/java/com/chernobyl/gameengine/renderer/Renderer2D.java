@@ -15,6 +15,9 @@ import org.lwjgl.system.MemoryUtil;
 
 import java.nio.ByteBuffer;
 
+import static com.chernobyl.gameengine.core.Instrumentor.HB_PROFILE_FUNCTION;
+import static com.chernobyl.gameengine.core.Instrumentor.HB_PROFILE_FUNCTION_STOP;
+
 public class Renderer2D {
     static class Renderer2DStorage
     {
@@ -27,6 +30,8 @@ public class Renderer2D {
 
     public static void Init()
     {
+        HB_PROFILE_FUNCTION();
+
         s_Data = new Renderer2DStorage();
         s_Data.QuadVertexArray = VertexArray.Create();
 
@@ -46,8 +51,7 @@ public class Renderer2D {
 
 
         int[] squareIndices = { 0, 1, 2, 2, 3, 0 };
-        IndexBuffer
-        squareIB = IndexBuffer.Create(squareIndices, squareIndices.length);
+        IndexBuffer squareIB = IndexBuffer.Create(squareIndices, squareIndices.length);
         s_Data.QuadVertexArray.SetIndexBuffer(squareIB);
 
         s_Data.WhiteTexture = Texture2D.Create(1, 1);
@@ -63,22 +67,33 @@ public class Renderer2D {
         s_Data.TextureShader = Shader.Create("assets/shaders/Texture.glsl");
         s_Data.TextureShader.Bind();
         s_Data.TextureShader.SetInt("u_Texture", 0);
+
+        HB_PROFILE_FUNCTION_STOP();
     }
 
     public static void Shutdown()
     {
+        s_Data.QuadVertexArray.destroy();
+        s_Data.TextureShader.destroy();
+        s_Data.WhiteTexture.destroy();
         s_Data = null;
     }
 
     public static void BeginScene(OrthographicCamera camera)
     {
+        HB_PROFILE_FUNCTION();
+
         s_Data.TextureShader.Bind();
         s_Data.TextureShader.SetMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
+
+        HB_PROFILE_FUNCTION_STOP();
     }
 
     public static void EndScene()
     {
+        HB_PROFILE_FUNCTION();
 
+        HB_PROFILE_FUNCTION_STOP();
     }
 
     public static void DrawQuad(Vec2 position, Vec2 size, Vec4 color)
@@ -88,6 +103,8 @@ public class Renderer2D {
 
     public static void DrawQuad(Vec3 position, Vec2 size, Vec4 color)
     {
+        HB_PROFILE_FUNCTION();
+
         s_Data.TextureShader.SetFloat4("u_Color", color);
         s_Data.WhiteTexture.Bind();
 
@@ -96,10 +113,14 @@ public class Renderer2D {
 
         s_Data.QuadVertexArray.Bind();
         RenderCommand.DrawIndexed(s_Data.QuadVertexArray);
+
+        HB_PROFILE_FUNCTION_STOP();
     }
 
     public static void DrawQuad(Vec3 position, Vec2 size, Texture2D texture)
     {
+        HB_PROFILE_FUNCTION();
+
         s_Data.TextureShader.SetFloat4("u_Color", new Vec4(1.0f));
         texture.Bind();
 
@@ -108,5 +129,7 @@ public class Renderer2D {
 
         s_Data.QuadVertexArray.Bind();
         RenderCommand.DrawIndexed(s_Data.QuadVertexArray);
+
+        HB_PROFILE_FUNCTION_STOP();
     }
 }

@@ -35,11 +35,18 @@ public class Sandbox2D extends Layer {
 
     public void OnAttach()
     {
+        HB_PROFILE_FUNCTION();
+
         m_CheckerboardTexture = Texture2D.Create("assets/textures/Checkerboard.png");
+
+        HB_PROFILE_FUNCTION_STOP();
     }
 
     public void OnDetach()
     {
+        HB_PROFILE_FUNCTION();
+
+        HB_PROFILE_FUNCTION_STOP();
     }
 
     public void OnUpdate(Timestep ts)

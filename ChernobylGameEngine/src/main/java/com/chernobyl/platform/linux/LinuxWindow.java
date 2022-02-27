@@ -9,6 +9,7 @@ import com.chernobyl.platform.opengl.OpenGLContext;
 import org.lwjgl.glfw.GLFWErrorCallback;
 
 import static com.chernobyl.gameengine.core.Asserts.HB_CORE_ASSERT;
+import static com.chernobyl.gameengine.core.Instrumentor.*;
 import static com.chernobyl.gameengine.core.Log.HB_CORE_ERROR;
 import static com.chernobyl.gameengine.core.Log.HB_CORE_INFO;
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
@@ -22,18 +23,26 @@ public class LinuxWindow extends Window {
     static boolean s_GLFWInitialized = false;
 
     private LinuxWindow(){
+        HB_PROFILE_FUNCTION();
+
         WindowProps windowProps = new WindowProps();
         this.width = windowProps.getWidth();
         this.height = windowProps.getHeight();
         this.title = windowProps.getTitle();
         Init();
+
+        HB_PROFILE_FUNCTION_STOP();
     }
 
     private LinuxWindow(WindowProps windowProps){
+        HB_PROFILE_FUNCTION();
+
         this.width = windowProps.getWidth();
         this.height = windowProps.getHeight();
         this.title = windowProps.getTitle();
         Init();
+
+        HB_PROFILE_FUNCTION_STOP();
     }
 
 
@@ -59,6 +68,10 @@ public class LinuxWindow extends Window {
 
     void Init()
     {
+        HB_PROFILE_FUNCTION();
+
+        HB_PROFILE_SCOPE("glfwInit");
+
         HB_CORE_INFO("Creating window {0} ({1}, {2})", this.title, this.width, this.height);
 
         if (!s_GLFWInitialized)
@@ -71,7 +84,13 @@ public class LinuxWindow extends Window {
             s_GLFWInitialized = true;
         }
 
+        HB_PROFILE_SCOPE_STOP("glfwInit");
+
+        HB_PROFILE_SCOPE("glfwCreateWindow");
+
         nativeWindow = glfwCreateWindow(this.width, this.height, this.title, NULL, NULL);
+
+        HB_PROFILE_SCOPE_STOP("glfwCreateWindow");
 
         HB_CORE_ASSERT(nativeWindow != NULL, "Could not create GLFW window.");
 
@@ -159,10 +178,14 @@ public class LinuxWindow extends Window {
             MouseMovedEvent event = new MouseMovedEvent((float)xPos, (float)yPos);
             eventCallback.invoke(event);
         });
+
+        HB_PROFILE_FUNCTION_STOP();
     }
 
     public void Shutdown()
     {
+        HB_PROFILE_FUNCTION();
+
         // Free the window callbacks and destroy the window
         glfwFreeCallbacks(nativeWindow);
         glfwDestroyWindow(nativeWindow);
@@ -171,12 +194,18 @@ public class LinuxWindow extends Window {
         glfwTerminate();
         glfwSetErrorCallback(null).free();
         HB_CORE_INFO("Shutdown finished successfully");
+
+        HB_PROFILE_FUNCTION_STOP();
     }
 
     @Override
     public void OnUpdate() {
+        HB_PROFILE_FUNCTION();
+
         glfwPollEvents();
         m_Context.SwapBuffers();
+
+        HB_PROFILE_FUNCTION_STOP();
     }
 
     @Override
@@ -186,12 +215,16 @@ public class LinuxWindow extends Window {
 
     @Override
     public void SetVSync(boolean enabled) {
+        HB_PROFILE_FUNCTION();
+
         if (enabled)
             glfwSwapInterval(1);
         else
             glfwSwapInterval(0);
 
         vSync = enabled;
+
+        HB_PROFILE_FUNCTION_STOP();
     }
 
     @Override

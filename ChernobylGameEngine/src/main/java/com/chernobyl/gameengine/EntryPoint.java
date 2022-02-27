@@ -15,5 +15,8 @@ public class EntryPoint<T extends Application> {
         HB_PROFILE_BEGIN_SESSION("Runtime", "HazelProfile-Runtime.json");
         client.Run();
         HB_PROFILE_END_SESSION();
+        HB_PROFILE_BEGIN_SESSION("Startup", "HazelProfile-Shutdown.json");
+        client.destroy();
+        HB_PROFILE_END_SESSION();
     }
 }

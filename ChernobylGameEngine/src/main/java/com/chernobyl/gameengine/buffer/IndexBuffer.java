@@ -6,6 +6,7 @@ import com.chernobyl.platform.opengl.openglbuffer.OpenGLIndexBuffer;
 import static com.chernobyl.gameengine.core.Asserts.HB_CORE_ASSERT;
 
 public abstract class IndexBuffer {
+    abstract public void destroy();
     public abstract void Bind();
     public abstract void Unbind();
     public static IndexBuffer Create(int[] indices, int size) {

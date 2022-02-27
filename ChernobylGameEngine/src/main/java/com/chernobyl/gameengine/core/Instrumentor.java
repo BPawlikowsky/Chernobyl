@@ -3,8 +3,6 @@ package com.chernobyl.gameengine.core;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Stack;
 import java.util.Vector;
 
 import static com.chernobyl.gameengine.core.Log.HB_CORE_ERROR;
@@ -140,7 +138,7 @@ public class Instrumentor {
 
     public static void HB_PROFILE_SCOPE(String name) {
         InstrumentationTimer timer = new InstrumentationTimer(
-                Thread.currentThread().getStackTrace()[2].getLineNumber() + name,
+                "Line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + ": " + name,
                 (ProfileResult profileResult) -> ProfileResults.addElement(profileResult)
         );
         timers.put(name, timer);

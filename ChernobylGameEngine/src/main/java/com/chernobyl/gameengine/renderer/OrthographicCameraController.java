@@ -9,6 +9,8 @@ import com.chernobyl.gameengine.events.enums.EventType;
 import com.chernobyl.gameengine.core.input.Input;
 import com.chernobyl.gameengine.math.Vec3;
 
+import static com.chernobyl.gameengine.core.Instrumentor.HB_PROFILE_FUNCTION;
+import static com.chernobyl.gameengine.core.Instrumentor.HB_PROFILE_FUNCTION_STOP;
 import static com.chernobyl.gameengine.core.input.KeyCodes.*;
 import static org.joml.Math.*;
 
@@ -41,6 +43,8 @@ public class OrthographicCameraController {
     }
 
     public void OnUpdate(Timestep ts) {
+        HB_PROFILE_FUNCTION();
+
         if (Input.IsKeyPressed(HB_KEY_A)) {
             m_CameraPosition.x -= cos(toRadians(m_CameraRotation)) * m_CameraTranslationSpeed * ts.GetSeconds();
             m_CameraPosition.y -= sin(toRadians(m_CameraRotation)) * m_CameraTranslationSpeed * ts.GetSeconds();
@@ -78,12 +82,18 @@ public class OrthographicCameraController {
         m_Camera.SetPosition(m_CameraPosition);
 
         m_CameraTranslationSpeed = m_ZoomLevel;
+
+        HB_PROFILE_FUNCTION_STOP();
     }
 
     public void OnEvent(Event e) {
+        HB_PROFILE_FUNCTION();
+
         EventDispatcher dispatcher = new EventDispatcher(e);
         dispatcher.Dispatch(this::OnMouseScrolled, EventType.MouseScrolled);
         dispatcher.Dispatch(this::OnWindowResized, EventType.WindowResize);
+
+        HB_PROFILE_FUNCTION_STOP();
     }
 
     public float GetZoomLevel() { return m_ZoomLevel; }
@@ -91,15 +101,23 @@ public class OrthographicCameraController {
     public void SetZoomLevel(float level) { m_ZoomLevel = level; }
 
     private boolean OnMouseScrolled(MouseScrolledEvent e) {
+        HB_PROFILE_FUNCTION();
+
         m_ZoomLevel -= e.getYOffset() * 0.25f;
         m_ZoomLevel = Math.max(m_ZoomLevel, 0.25f);
         m_Camera.SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
+
+        HB_PROFILE_FUNCTION_STOP();
         return false;
     }
 
     private boolean OnWindowResized(WindowResizeEvent e) {
+        HB_PROFILE_FUNCTION();
+
         m_AspectRatio = (float) e.getWidth() / (float) e.getHeight();
         m_Camera.SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
+
+        HB_PROFILE_FUNCTION_STOP();
         return false;
     }
 }

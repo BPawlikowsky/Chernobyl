@@ -4,16 +4,22 @@ import com.chernobyl.gameengine.math.Vec4;
 import com.chernobyl.gameengine.renderer.RendererAPI;
 import com.chernobyl.gameengine.renderer.VertexArray;
 
+import static com.chernobyl.gameengine.core.Instrumentor.HB_PROFILE_FUNCTION;
+import static com.chernobyl.gameengine.core.Instrumentor.HB_PROFILE_FUNCTION_STOP;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class OpenGLRendererAPI extends RendererAPI {
     @Override
     public void Init() {
+        HB_PROFILE_FUNCTION();
+
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         glEnable(GL_DEPTH_TEST);
+
+        HB_PROFILE_FUNCTION_STOP();
     }
 
     public void SetViewport(int x, int y, int width, int height)

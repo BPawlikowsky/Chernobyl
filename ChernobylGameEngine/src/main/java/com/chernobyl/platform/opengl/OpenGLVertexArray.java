@@ -8,6 +8,8 @@ import com.chernobyl.gameengine.renderer.VertexArray;
 import java.util.Vector;
 
 import static com.chernobyl.gameengine.core.Asserts.HB_CORE_ASSERT;
+import static com.chernobyl.gameengine.core.Instrumentor.HB_PROFILE_FUNCTION;
+import static com.chernobyl.gameengine.core.Instrumentor.HB_PROFILE_FUNCTION_STOP;
 import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.opengl.GL45.glCreateVertexArrays;
 
@@ -17,27 +19,48 @@ public class OpenGLVertexArray extends VertexArray {
     private IndexBuffer m_IndexBuffer;
 
     public OpenGLVertexArray() {
+        HB_PROFILE_FUNCTION();
+
         m_VertexBuffers = new Vector<>();
         m_RendererID = glCreateVertexArrays();
+
+        HB_PROFILE_FUNCTION_STOP();
     }
 
     @Override
     public void destroy() {
+        HB_PROFILE_FUNCTION();
+
         glDeleteVertexArrays(m_RendererID);
+        m_IndexBuffer.destroy();
+        for (var vb : m_VertexBuffers)
+            vb.destroy();
+
+        HB_PROFILE_FUNCTION_STOP();
     }
 
     @Override
     public void Bind() {
+        HB_PROFILE_FUNCTION();
+
         glBindVertexArray(m_RendererID);
+
+        HB_PROFILE_FUNCTION_STOP();
     }
 
     @Override
     public void Unbind() {
+        HB_PROFILE_FUNCTION();
+
         glBindVertexArray(0);
+
+        HB_PROFILE_FUNCTION_STOP();
     }
 
     @Override
     public void AddVertexBuffer(VertexBuffer vertexBuffer) {
+        HB_PROFILE_FUNCTION();
+
         HB_CORE_ASSERT(vertexBuffer.GetLayout().GetElements().size() != 0, "Vertex Buffer has no layout!");
 
         glBindVertexArray(m_RendererID);
@@ -58,14 +81,20 @@ public class OpenGLVertexArray extends VertexArray {
         }
 
         m_VertexBuffers.insertElementAt(vertexBuffer, 0);
+
+        HB_PROFILE_FUNCTION_STOP();
     }
 
     @Override
     public void SetIndexBuffer(IndexBuffer indexBuffer) {
+        HB_PROFILE_FUNCTION();
+
         glBindVertexArray(m_RendererID);
         indexBuffer.Bind();
 
         m_IndexBuffer = indexBuffer;
+
+        HB_PROFILE_FUNCTION_STOP();
     }
 
     @Override

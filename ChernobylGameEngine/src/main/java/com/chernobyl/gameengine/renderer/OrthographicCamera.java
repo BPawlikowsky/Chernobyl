@@ -3,6 +3,8 @@ package com.chernobyl.gameengine.renderer;
 import com.chernobyl.gameengine.math.Mat4;
 import com.chernobyl.gameengine.math.Vec3;
 
+import static com.chernobyl.gameengine.core.Instrumentor.HB_PROFILE_FUNCTION;
+import static com.chernobyl.gameengine.core.Instrumentor.HB_PROFILE_FUNCTION_STOP;
 import static org.joml.Math.toRadians;
 
 public class OrthographicCamera {
@@ -14,12 +16,16 @@ public class OrthographicCamera {
     float m_Rotation = 0.0f;
 
     public OrthographicCamera(float left, float right, float bottom, float top) {
+        HB_PROFILE_FUNCTION();
+
         var ortho = new Mat4().setOrtho(left, right, bottom, top, -1.0f, 1.0f);
         m_ProjectionMatrix = new Mat4();
         m_ProjectionMatrix.mul(ortho);
         m_ViewMatrix = new Mat4(1.0f);
         m_ViewProjectionMatrix = new Mat4();
         m_ViewProjectionMatrix.set(m_ProjectionMatrix.mul(m_ViewMatrix));
+
+        HB_PROFILE_FUNCTION_STOP();
     }
 
     public Vec3 GetPosition() {
@@ -53,6 +59,8 @@ public class OrthographicCamera {
     }
 
     private void RecalculateViewMatrix() {
+        HB_PROFILE_FUNCTION();
+
         var transform = new Mat4()
                 .translate(m_Position)
                 .rotate(toRadians(m_Rotation), new Vec3(0f, 0f, 1f));
@@ -61,11 +69,17 @@ public class OrthographicCamera {
         m_ViewMatrix.set(transform);
 
         m_ProjectionMatrix.mul(m_ViewMatrix, m_ViewProjectionMatrix);
+
+        HB_PROFILE_FUNCTION_STOP();
     }
 
     void SetProjection(float left, float right, float bottom, float top)
     {
+        HB_PROFILE_FUNCTION();
+
         m_ProjectionMatrix = new Mat4().ortho(left, right, bottom, top, -1.0f, 1.0f);
         m_ProjectionMatrix.mul(m_ViewMatrix, m_ViewProjectionMatrix);
+
+        HB_PROFILE_FUNCTION_STOP();
     }
 }
