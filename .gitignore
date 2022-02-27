@@ -15,3 +15,4 @@ imgui.ini
 build
 lib
 /HazelProfile-Shutdown.json
+/Hazel.log
