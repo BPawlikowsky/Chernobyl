@@ -1,18 +1,19 @@
 package com.chernobyl.gameengine.events;
 
 import com.chernobyl.gameengine.core.Event;
+import com.chernobyl.gameengine.core.input.KeyCode;
 
 import static com.chernobyl.gameengine.events.enums.EventCategory.EventCategoryInput;
 import static com.chernobyl.gameengine.events.enums.EventCategory.EventCategoryKeyboard;
 
 public abstract class KeyEvent extends Event {
-    final protected int keyCode;
+    final protected KeyCode keyCode;
 
-    public KeyEvent(int keyCode) {
+    public KeyEvent(KeyCode keyCode) {
         this.keyCode = keyCode;
     }
 
-    public int GetKeyCode() {
+    public KeyCode GetKeyCode() {
         return keyCode;
     }
 

@@ -14,3 +14,4 @@ imgui.ini
 # Ignore Gradle build output directory
 build
 lib
+/HazelProfile-Shutdown.json

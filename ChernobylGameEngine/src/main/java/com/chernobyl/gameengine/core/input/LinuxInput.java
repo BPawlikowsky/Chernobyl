@@ -10,18 +10,18 @@ import static org.lwjgl.glfw.GLFW.*;
 
 public class LinuxInput extends Input{
     @Override
-    protected boolean IsKeyPressedImpl(int keycode) {
+    protected boolean IsKeyPressedImpl(KeyCode keycode) {
         Application.Create();
         long window = Application.getM_Window().getNativeWindow();
-        int state = glfwGetKey(window, keycode);
+        int state = glfwGetKey(window, keycode.key());
         return state == GLFW_PRESS || state == GLFW_REPEAT;
     }
 
     @Override
-    protected boolean IsMouseButtonPressedImpl(int button) {
+    protected boolean IsMouseButtonPressedImpl(MouseCode button) {
         Application.Create();
         long window = Application.getM_Window().getNativeWindow();
-        int state = glfwGetMouseButton(window, button);
+        int state = glfwGetMouseButton(window, button.key());
         return state == GLFW_PRESS;
     }
 

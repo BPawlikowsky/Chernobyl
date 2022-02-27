@@ -1,10 +1,14 @@
 package com.chernobyl.platform.linux;
 
+import com.chernobyl.gameengine.core.Config;
+import com.chernobyl.gameengine.core.input.KeyCode;
+import com.chernobyl.gameengine.core.input.MouseCode;
 import com.chernobyl.gameengine.events.*;
 import com.chernobyl.gameengine.render.GraphicsContext;
 import com.chernobyl.gameengine.core.window.IEventCallback;
 import com.chernobyl.gameengine.core.window.Window;
 import com.chernobyl.gameengine.core.window.WindowProps;
+import com.chernobyl.gameengine.renderer.Renderer;
 import com.chernobyl.platform.opengl.OpenGLContext;
 import org.lwjgl.glfw.GLFWErrorCallback;
 
@@ -12,6 +16,7 @@ import static com.chernobyl.gameengine.core.Asserts.HB_CORE_ASSERT;
 import static com.chernobyl.gameengine.core.Instrumentor.*;
 import static com.chernobyl.gameengine.core.Log.HB_CORE_ERROR;
 import static com.chernobyl.gameengine.core.Log.HB_CORE_INFO;
+import static com.chernobyl.gameengine.renderer.RendererAPI.API.OpenGL;
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
@@ -88,6 +93,9 @@ public class LinuxWindow extends Window {
 
         HB_PROFILE_SCOPE("glfwCreateWindow");
 
+        if (Config.isDebug)
+            if (Renderer.GetAPI() == OpenGL) glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
+
         nativeWindow = glfwCreateWindow(this.width, this.height, this.title, NULL, NULL);
 
         HB_PROFILE_SCOPE_STOP("glfwCreateWindow");
@@ -124,27 +132,28 @@ public class LinuxWindow extends Window {
             {
                 case GLFW_PRESS:
                 {
-                    KeyPressedEvent event = new KeyPressedEvent(key, 0);
+                    KeyPressedEvent event = new KeyPressedEvent(KeyCode.getEnumFromKey(key), 0);
                     eventCallback.invoke(event);
                     break;
                 }
                 case GLFW_RELEASE:
                 {
-                    KeyReleasedEvent event = new KeyReleasedEvent(key);
+                    KeyReleasedEvent event = new KeyReleasedEvent(KeyCode.getEnumFromKey(key));
                     eventCallback.invoke(event);
                     break;
                 }
                 case GLFW_REPEAT:
                 {
-                    KeyPressedEvent event = new KeyPressedEvent(key, 1);
+                    KeyPressedEvent event = new KeyPressedEvent(KeyCode.getEnumFromKey(key), 1);
                     eventCallback.invoke(event);
                     break;
                 }
             }
         });
+
         glfwSetCharCallback(nativeWindow, (long window, int keycode) ->
         {
-            KeyTypedEvent event = new KeyTypedEvent(keycode);
+            KeyTypedEvent event = new KeyTypedEvent(KeyCode.getEnumFromKey(keycode));
             eventCallback.invoke(event);
         });
 
@@ -154,13 +163,13 @@ public class LinuxWindow extends Window {
             {
                 case GLFW_PRESS:
                 {
-                    MouseButtonPressedEvent event = new MouseButtonPressedEvent(button);
+                    MouseButtonPressedEvent event = new MouseButtonPressedEvent(MouseCode.getEnumFromKey(button));
                     eventCallback.invoke(event);
                     break;
                 }
                 case GLFW_RELEASE:
                 {
-                    MouseButtonReleasedEvent event = new MouseButtonReleasedEvent(button);
+                    MouseButtonReleasedEvent event = new MouseButtonReleasedEvent(MouseCode.getEnumFromKey(button));
                     eventCallback.invoke(event);
                     break;
                 }

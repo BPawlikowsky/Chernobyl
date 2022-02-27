@@ -24,6 +24,13 @@ public class Log {
         return formattedString;
     }
 
+    static public void HB_CORE_CRITICAL(Object arg) {
+        getCoreLogger().error("(CRITICAL) " + arg.toString());
+    }
+    static public void HB_CORE_CRITICAL(String arg, Object...args) {
+        getCoreLogger().error("(CRITICAL) " + formatString(arg, args));
+    }
+
     static public void HB_CORE_ERROR(Object arg) { getCoreLogger().error(arg.toString()); }
     static public void HB_CORE_ERROR(String arg, Object...args) { getCoreLogger().error(formatString(arg, args)); }
 

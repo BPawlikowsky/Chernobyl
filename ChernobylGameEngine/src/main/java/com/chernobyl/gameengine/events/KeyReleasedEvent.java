@@ -1,9 +1,10 @@
 package com.chernobyl.gameengine.events;
 
+import com.chernobyl.gameengine.core.input.KeyCode;
 import com.chernobyl.gameengine.events.enums.EventType;
 
 public class KeyReleasedEvent extends KeyEvent {
-    public KeyReleasedEvent(int keyCode) {
+    public KeyReleasedEvent(KeyCode keyCode) {
         super(keyCode);
     }
 

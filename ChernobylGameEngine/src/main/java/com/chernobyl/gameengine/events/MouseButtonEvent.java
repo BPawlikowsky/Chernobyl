@@ -1,6 +1,7 @@
 package com.chernobyl.gameengine.events;
 
 import com.chernobyl.gameengine.core.Event;
+import com.chernobyl.gameengine.core.input.MouseCode;
 import lombok.Getter;
 
 import static com.chernobyl.gameengine.events.enums.EventCategory.EventCategoryInput;
@@ -8,9 +9,9 @@ import static com.chernobyl.gameengine.events.enums.EventCategory.EventCategoryM
 
 public abstract class MouseButtonEvent extends Event {
     @Getter
-    final protected int mouseButton;
+    final protected MouseCode mouseButton;
 
-    public MouseButtonEvent(int mouseButton) {
+    public MouseButtonEvent(MouseCode mouseButton) {
         this.mouseButton = mouseButton;
     }
 

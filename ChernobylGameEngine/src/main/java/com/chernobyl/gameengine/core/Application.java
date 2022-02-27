@@ -35,7 +35,7 @@ public class Application {
 
         HB_CORE_ASSERT(s_Instance == null, "Application already exists!");
 
-        m_Window = LinuxWindow.get();
+        m_Window = Window.Create();
         m_Window.SetEventCallback(this::onEvent);
 
         Renderer.Init();

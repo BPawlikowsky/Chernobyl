@@ -3,6 +3,7 @@ package com.chernobyl.gameengine.core;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.UUID;
 import java.util.Vector;
 
 import static com.chernobyl.gameengine.core.Log.HB_CORE_ERROR;
@@ -97,7 +98,13 @@ public class Instrumentor {
             m_OutputStream.write("\"pid\":0,".getBytes(StandardCharsets.UTF_8));
             m_OutputStream.write(("\"tid\":" + result.ThreadID + ",").getBytes(StandardCharsets.UTF_8));
             m_OutputStream.write(("\"ts\":" + result.Start).getBytes(StandardCharsets.UTF_8));
-            m_OutputStream.write("}".getBytes(StandardCharsets.UTF_8));
+            m_OutputStream.write("},".getBytes(StandardCharsets.UTF_8));
+
+            float free = Runtime.getRuntime().freeMemory() / 1024f;
+            float total = Runtime.getRuntime().totalMemory() / 1024f;
+            var process_args = "\"used\": " + (total - free) + ",\"free\":" + free + ",\"total\":" + total;
+            m_OutputStream.write(("{\"name\": \"memory(KB)\", \"ts\": "+ result.Start + ", \"ph\": \"C\", \"pid\": " +
+                    result.ThreadID +", \"args\": { " + process_args + " }}").getBytes(StandardCharsets.UTF_8));
 
             m_OutputStream.flush();
         } catch (IOException e) {
