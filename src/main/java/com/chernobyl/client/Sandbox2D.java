@@ -1,6 +1,5 @@
 package com.chernobyl.client;
 
-import com.chernobyl.gameengine.Timer;
 import com.chernobyl.gameengine.renderer.OrthographicCameraController;
 import com.chernobyl.gameengine.core.Timestep;
 import com.chernobyl.gameengine.core.Event;
@@ -15,9 +14,8 @@ import com.chernobyl.gameengine.renderer.Texture2D;
 import com.chernobyl.gameengine.renderer.VertexArray;
 import imgui.ImGui;
 
-import java.util.Vector;
-
-import static com.chernobyl.gameengine.Timer.*;
+import static com.chernobyl.gameengine.core.Instrumentor.*;
+import static com.chernobyl.gameengine.core.Instrumentor.ProfileResults;
 
 public class Sandbox2D extends Layer {
     private final OrthographicCameraController m_CameraController;
@@ -46,32 +44,36 @@ public class Sandbox2D extends Layer {
 
     public void OnUpdate(Timestep ts)
     {
-        PROFILE_SCOPE("Sandbox2D::OnUpdate");
+        HB_PROFILE_FUNCTION();
+
+        HB_PROFILE_SCOPE("Sandbox2D::OnUpdate");
         // Update
-        PROFILE_SCOPE("CameraController::OnUpdate");
+        HB_PROFILE_SCOPE("CameraController::OnUpdate");
         m_CameraController.OnUpdate(ts);
-        PROFILE_SCOPE_STOP("CameraController::OnUpdate");
+        HB_PROFILE_SCOPE_STOP("CameraController::OnUpdate");
 
         // Render
-        PROFILE_SCOPE("Renderer Prep");
+        HB_PROFILE_SCOPE("Renderer Prep");
         RenderCommand.SetClearColor(new Vec4( 0.1f, 0.1f, 0.1f, 1 ));
         RenderCommand.Clear();
-        PROFILE_SCOPE_STOP("Renderer Prep");
+        HB_PROFILE_SCOPE_STOP("Renderer Prep");
 
-        PROFILE_SCOPE("Renderer Draw");
+        HB_PROFILE_SCOPE("Renderer Draw");
         Renderer2D.BeginScene(m_CameraController.GetCamera());
         Renderer2D.DrawQuad(new Vec2( -1.0f, 0.0f ), new Vec2( 0.8f, 0.8f ), new Vec4( 0.8f, 0.2f, 0.3f, 1.0f ));
         Renderer2D.DrawQuad(new Vec2( 0.5f, -0.5f ), new Vec2( 0.5f, 0.75f ), new Vec4( 0.2f, 0.3f, 0.8f, 1.0f ));
         Renderer2D.DrawQuad(new Vec3( 0.0f, 0.0f, -0.1f ), new Vec2( 10.0f, 10.0f ), m_CheckerboardTexture);
         Renderer2D.EndScene();
-        PROFILE_SCOPE_STOP("Renderer Draw");
+        HB_PROFILE_SCOPE_STOP("Renderer Draw");
 
-        PROFILE_SCOPE_STOP("Sandbox2D::OnUpdate");
+        HB_PROFILE_SCOPE_STOP("Sandbox2D::OnUpdate");
+
+        HB_PROFILE_FUNCTION_STOP();
     }
 
     public void OnImGuiRender()
     {
-        PROFILE_SCOPE("Im Gui Layer");
+        HB_PROFILE_FUNCTION();
         ImGui.begin("Settings");
         float[] arr = { m_SquareColor.x, m_SquareColor.y, m_SquareColor.z, m_SquareColor.w };
         ImGui.colorEdit4("Square Color", arr);
@@ -85,7 +87,7 @@ public class Sandbox2D extends Layer {
             ImGui.text(label);
         }
         ProfileResults.clear();
-        PROFILE_SCOPE_STOP("Im Gui Layer");
+        HB_PROFILE_FUNCTION_STOP();
     }
 
     public void OnEvent(Event e)
