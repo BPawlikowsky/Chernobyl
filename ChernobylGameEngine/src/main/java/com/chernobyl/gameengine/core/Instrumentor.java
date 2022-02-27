@@ -3,7 +3,6 @@ package com.chernobyl.gameengine.core;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
-import java.util.UUID;
 import java.util.Vector;
 
 import static com.chernobyl.gameengine.core.Log.HB_CORE_ERROR;
@@ -13,6 +12,7 @@ public class Instrumentor {
         On, Off
     }
 
+    private static final Profile profile = Profile.On;
     private static class InstrumentationSession {
         String Name;
 
@@ -136,37 +136,47 @@ public class Instrumentor {
     }
 
     public static void HB_PROFILE_BEGIN_SESSION(String name, String filepath) {
-        Instrumentor.Get().BeginSession(name, filepath);
+        if(profile.equals(Profile.On))
+            Instrumentor.Get().BeginSession(name, filepath);
     }
 
     public static void HB_PROFILE_END_SESSION() {
-        Instrumentor.Get().EndSession();
+        if(profile.equals(Profile.On))
+            Instrumentor.Get().EndSession();
     }
 
     public static void HB_PROFILE_SCOPE(String name) {
-        InstrumentationTimer timer = new InstrumentationTimer(
-                "Line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + ": " + name,
-                (ProfileResult profileResult) -> ProfileResults.addElement(profileResult)
-        );
-        timers.put(name, timer);
+        if(profile.equals(Profile.On)) {
+            InstrumentationTimer timer = new InstrumentationTimer(
+                    "Line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + ": " + name,
+                    (ProfileResult profileResult) -> ProfileResults.addElement(profileResult)
+            );
+            timers.put(name, timer);
+        }
     }
 
     public static void HB_PROFILE_SCOPE_STOP(String name)
     {
-        var last = timers.remove(name);
-        if (!last.m_Stopped)
-            last.Stop();
+        if(profile.equals(Profile.On)) {
+            var last = timers.remove(name);
+            if (!last.m_Stopped)
+                last.Stop();
+        }
     }
 
 
     public static void HB_PROFILE_FUNCTION() {
-        var stack = Thread.currentThread().getStackTrace()[2];
-        HB_PROFILE_SCOPE(stack.getClassName() + "::" + stack.getMethodName());
+        if(profile.equals(Profile.On)) {
+            var stack = Thread.currentThread().getStackTrace()[2];
+            HB_PROFILE_SCOPE(stack.getClassName() + "::" + stack.getMethodName());
+        }
     }
 
     public static void HB_PROFILE_FUNCTION_STOP() {
-        var stack = Thread.currentThread().getStackTrace()[2];
-        HB_PROFILE_SCOPE_STOP(stack.getClassName() + "::" + stack.getMethodName());
+        if(profile.equals(Profile.On)){
+            var stack = Thread.currentThread().getStackTrace()[2];
+            HB_PROFILE_SCOPE_STOP(stack.getClassName() + "::" + stack.getMethodName());
+        }
     }
 }
 
