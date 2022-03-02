@@ -118,12 +118,12 @@ public class Renderer2D {
 
         HB_PROFILE_FUNCTION_STOP();
     }
-    public static void DrawQuad(Vec2 position, Vec2 size, Vec4 color, float tilingFactor, Vec4 tintColor)
+    public static void DrawQuad(Vec2 position, Vec2 size, Vec4 color, Vec4 tintColor, float tilingFactor)
     {
-        DrawQuad(new Vec3( position.x, position.y, 0.0f ), size, color, tilingFactor, tintColor);
+        DrawQuad(new Vec3( position.x, position.y, 0.0f ), size, color, tintColor, tilingFactor);
     }
 
-    public static void DrawQuad(Vec3 position, Vec2 size, Vec4 color, float tilingFactor, Vec4 tintColor)
+    public static void DrawQuad(Vec3 position, Vec2 size, Vec4 color, Vec4 tintColor, float tilingFactor)
     {
         HB_PROFILE_FUNCTION();
 
@@ -146,6 +146,24 @@ public class Renderer2D {
         HB_PROFILE_FUNCTION();
 
         s_Data.TextureShader.SetFloat4("u_Color", new Vec4(1.0f));
+        s_Data.TextureShader.SetFloat("u_TilingFactor", 1.0f);
+        texture.Bind();
+
+        Mat4 transform = new Mat4().translate(position).scale(new Vec3( size.x, size.y, 1.0f ));
+        s_Data.TextureShader.SetMat4("u_Transform", transform);
+
+        s_Data.QuadVertexArray.Bind();
+        RenderCommand.DrawIndexed(s_Data.QuadVertexArray);
+
+        HB_PROFILE_FUNCTION_STOP();
+    }
+
+    public static void DrawQuad(Vec3 position, Vec2 size, Texture2D texture, float tilingFactor)
+    {
+        HB_PROFILE_FUNCTION();
+
+        s_Data.TextureShader.SetFloat4("u_Color", new Vec4(1.0f));
+        s_Data.TextureShader.SetFloat("u_TilingFactor", tilingFactor);
         texture.Bind();
 
         Mat4 transform = new Mat4().translate(position).scale(new Vec3( size.x, size.y, 1.0f ));
