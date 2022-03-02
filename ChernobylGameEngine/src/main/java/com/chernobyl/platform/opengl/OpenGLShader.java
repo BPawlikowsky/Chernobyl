@@ -228,6 +228,16 @@ public class OpenGLShader extends Shader {
     }
 
     @Override
+    public void SetFloat(String name, float value)
+    {
+        HB_PROFILE_FUNCTION();
+
+        UploadUniformFloat(name, value);
+
+        HB_PROFILE_FUNCTION_STOP();
+    }
+
+    @Override
     public void SetFloat3(String name, Vec3 value) {
         HB_PROFILE_FUNCTION();
 

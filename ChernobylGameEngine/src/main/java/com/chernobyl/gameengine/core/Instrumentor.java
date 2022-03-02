@@ -12,7 +12,7 @@ public class Instrumentor {
         On, Off
     }
 
-    private static final Profile profile = Profile.On;
+    private static final Profile profile = Profile.Off;
     private static class InstrumentationSession {
         String Name;
 

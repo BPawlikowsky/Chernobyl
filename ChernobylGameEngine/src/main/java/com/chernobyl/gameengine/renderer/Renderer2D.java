@@ -106,9 +106,33 @@ public class Renderer2D {
         HB_PROFILE_FUNCTION();
 
         s_Data.TextureShader.SetFloat4("u_Color", color);
+        s_Data.TextureShader.SetFloat("u_TilingFactor", 1.0f);
         s_Data.WhiteTexture.Bind();
 
-        Mat4 transform = new Mat4().translate(position).scale(new Vec3( size.x, size.y, 1.0f ));
+        Mat4 transform = new Mat4().translate(position)
+                .scale(new Vec3( size.x, size.y, 1.0f ));
+        s_Data.TextureShader.SetMat4("u_Transform", transform);
+
+        s_Data.QuadVertexArray.Bind();
+        RenderCommand.DrawIndexed(s_Data.QuadVertexArray);
+
+        HB_PROFILE_FUNCTION_STOP();
+    }
+    public static void DrawQuad(Vec2 position, Vec2 size, Vec4 color, float tilingFactor, Vec4 tintColor)
+    {
+        DrawQuad(new Vec3( position.x, position.y, 0.0f ), size, color, tilingFactor, tintColor);
+    }
+
+    public static void DrawQuad(Vec3 position, Vec2 size, Vec4 color, float tilingFactor, Vec4 tintColor)
+    {
+        HB_PROFILE_FUNCTION();
+
+        s_Data.TextureShader.SetFloat4("u_Color", color);
+        s_Data.TextureShader.SetFloat("u_TilingFactor", tilingFactor);
+        s_Data.WhiteTexture.Bind();
+
+        Mat4 transform = new Mat4().translate(position)
+                .scale(new Vec3( size.x, size.y, 1.0f ));
         s_Data.TextureShader.SetMat4("u_Transform", transform);
 
         s_Data.QuadVertexArray.Bind();
@@ -127,6 +151,51 @@ public class Renderer2D {
         Mat4 transform = new Mat4().translate(position).scale(new Vec3( size.x, size.y, 1.0f ));
         s_Data.TextureShader.SetMat4("u_Transform", transform);
 
+        s_Data.QuadVertexArray.Bind();
+        RenderCommand.DrawIndexed(s_Data.QuadVertexArray);
+
+        HB_PROFILE_FUNCTION_STOP();
+    }
+
+    public static void DrawRotatedQuad(Vec2 position, Vec2 size, float rotation, Vec4 color)
+    {
+        DrawRotatedQuad(new Vec3( position.x, position.y, 0.0f ), size, rotation, color);
+    }
+
+    public static void DrawRotatedQuad(Vec3 position, Vec2 size, float rotation, Vec4 color)
+    {
+        HB_PROFILE_FUNCTION();
+
+        s_Data.TextureShader.SetFloat4("u_Color", color);
+        s_Data.TextureShader.SetFloat("u_TilingFactor", 1.0f);
+        s_Data.WhiteTexture.Bind();
+
+        Mat4 transform = new Mat4().translate(position)
+                .rotate(rotation, new Vec3( 0.0f, 0.0f, 1.0f ))
+                .scale(new Vec3( size.x, size.y, 1.0f ));
+        s_Data.TextureShader.SetMat4("u_Transform", transform);
+        s_Data.QuadVertexArray.Bind();
+        RenderCommand.DrawIndexed(s_Data.QuadVertexArray);
+
+        HB_PROFILE_FUNCTION_STOP();
+    }
+
+    public static void DrawRotatedQuad(Vec2 position, Vec2 size, float rotation, Texture2D texture, float tilingFactor, Vec4 tintColor)
+    {
+        DrawRotatedQuad(new Vec3( position.x, position.y, 0.0f ), size, rotation, texture, tilingFactor, tintColor);
+    }
+
+    public static void DrawRotatedQuad(Vec3 position, Vec2 size, float rotation, Texture2D texture, float tilingFactor, Vec4 tintColor)
+    {
+        HB_PROFILE_FUNCTION();
+
+        s_Data.TextureShader.SetFloat4("u_Color", tintColor);
+        s_Data.TextureShader.SetFloat("u_TilingFactor", tilingFactor);
+        texture.Bind();
+
+        Mat4 transform = new Mat4().translate(position)
+                .rotate(rotation, new Vec3( 0.0f, 0.0f, 1.0f ))
+                .scale(new Vec3( size.x, size.y, 1.0f ));
         s_Data.QuadVertexArray.Bind();
         RenderCommand.DrawIndexed(s_Data.QuadVertexArray);
 
