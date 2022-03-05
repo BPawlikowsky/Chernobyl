@@ -8,6 +8,6 @@ public class Config {
     public static boolean isDebug = java.lang.management.ManagementFactory.getRuntimeMXBean().
         getInputArguments().toString().indexOf("-agentlib:jdwp") > 0;
 
-    public static boolean isProfiler = false;
+    public static boolean isProfiler = true;
     public static EnvConfiguration env = (isDebug) ? EnvConfiguration.Debug : EnvConfiguration.Dev;
 }

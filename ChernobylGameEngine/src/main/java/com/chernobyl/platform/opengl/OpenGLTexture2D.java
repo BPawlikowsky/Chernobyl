@@ -1,6 +1,7 @@
 package com.chernobyl.platform.opengl;
 
 import com.chernobyl.gameengine.renderer.Texture2D;
+import lombok.Getter;
 import org.lwjgl.system.MemoryStack;
 
 import java.nio.ByteBuffer;
@@ -137,5 +138,13 @@ public class OpenGLTexture2D extends Texture2D {
         glBindTextureUnit(slot, m_RendererID);
 
         HB_PROFILE_FUNCTION_STOP();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj.getClass().equals(this.getClass())) {
+            return this.m_RendererID == ((OpenGLTexture2D) obj).m_RendererID;
+        }
+        return false;
     }
 }

@@ -228,6 +228,12 @@ public class OpenGLShader extends Shader {
     }
 
     @Override
+    public void SetIntArray(String name, int[] values, int count) {
+
+        UploadUniformIntArray(name, values, count);
+    }
+
+    @Override
     public void SetFloat(String name, float value)
     {
         HB_PROFILE_FUNCTION();
@@ -298,5 +304,11 @@ public class OpenGLShader extends Shader {
     public void UploadUniformMat4(String name, Mat4 matrix) {
         int location = glGetUniformLocation(m_RendererID, name);
         glUniformMatrix4fv(location, false, matrix.toArray());
+    }
+
+    void UploadUniformIntArray(String name, int[] values, int count)
+    {
+        int location = glGetUniformLocation(m_RendererID, name);
+        glUniform1iv(location, values);
     }
 }

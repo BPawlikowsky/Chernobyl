@@ -39,6 +39,7 @@ public abstract class Shader {
     public abstract String GetName();
 
     public abstract void SetInt(String name, int value);
+    public abstract void SetIntArray(String name, int[] values, int count);
     public abstract void SetFloat(String name, float value);
     public abstract void SetFloat3(String name, Vec3 value);
     public abstract void SetFloat4(String name, Vec4 value);
