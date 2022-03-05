@@ -14,46 +14,88 @@ import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 
 import static com.chernobyl.gameengine.core.Instrumentor.HB_PROFILE_FUNCTION;
 import static com.chernobyl.gameengine.core.Instrumentor.HB_PROFILE_FUNCTION_STOP;
 
 public class Renderer2D {
-    static class Renderer2DStorage
-    {
-        VertexArray QuadVertexArray;
-        Shader TextureShader;
-        Texture2D WhiteTexture;
+    private static class QuadVertex {
+        Vec3 Position;
+        Vec4 Color;
+        Vec2 TexCoord;
+        // TODO: texid
+
+        public QuadVertex() {
+            Position = new Vec3();
+            Color = new Vec4();
+            TexCoord = new Vec2();
+        }
+        public QuadVertex(Vec3 position, Vec4 color, Vec2 texCoord) {
+            Position = position;
+            Color = color;
+            TexCoord = texCoord;
+        }
     }
 
-    static Renderer2DStorage s_Data;
+    static class Renderer2DData
+    {
+        int MaxQuads = 100;
+		int MaxVertices = MaxQuads * 4;
+		int MaxIndices = MaxQuads * 6;
+
+        VertexArray QuadVertexArray;
+        VertexBuffer QuadVertexBuffer;
+        Shader TextureShader;
+        Texture2D WhiteTexture;
+
+        int QuadIndexCount = 0;
+        ArrayList<QuadVertex> QuadVertexBufferBase;
+        int QuadVertexBufferPtr = 0;
+    }
+
+
+    static Renderer2DData s_Data = new Renderer2DData();
 
     public static void Init()
     {
         HB_PROFILE_FUNCTION();
 
-        s_Data = new Renderer2DStorage();
         s_Data.QuadVertexArray = VertexArray.Create();
+        s_Data.QuadVertexBuffer = VertexBuffer.Create(s_Data.MaxVertices * Float.BYTES);
 
-        float[] squareVertices = {
-                -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
-                 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
-                 0.5f,  0.5f, 0.0f, 1.0f, 1.0f,
-                -0.5f,  0.5f, 0.0f, 0.0f, 1.0f
-    };
-
-        VertexBuffer squareVB = VertexBuffer.Create(squareVertices, squareVertices.length);
-        squareVB.SetLayout(new BufferLayout(new BufferElement[]{
+        s_Data.QuadVertexBuffer.SetLayout(new BufferLayout(new BufferElement[]{
                 new BufferElement(ShaderDataType.Float3, "a_Position"),
+                new BufferElement(ShaderDataType.Float4, "a_Color"),
                 new BufferElement(ShaderDataType.Float2, "a_TexCoord")
         }));
-        s_Data.QuadVertexArray.AddVertexBuffer(squareVB);
+        s_Data.QuadVertexArray.AddVertexBuffer(s_Data.QuadVertexBuffer);
+
+        s_Data.QuadVertexBufferBase = new ArrayList<>();
+
+        int[] quadIndices = new int[s_Data.MaxIndices];
+
+        int offset = 0;
+        for (int i = 0; i < s_Data.MaxIndices; i += 6)
+        {
+            quadIndices[i + 0] = offset + 0;
+            quadIndices[i + 1] = offset + 1;
+            quadIndices[i + 2] = offset + 2;
+
+            quadIndices[i + 3] = offset + 2;
+            quadIndices[i + 4] = offset + 3;
+            quadIndices[i + 5] = offset + 0;
+
+            offset += 4;
+        }
 
 
         int[] squareIndices = { 0, 1, 2, 2, 3, 0 };
-        IndexBuffer squareIB = IndexBuffer.Create(squareIndices, squareIndices.length);
-        s_Data.QuadVertexArray.SetIndexBuffer(squareIB);
+        IndexBuffer quadIB = IndexBuffer.Create(quadIndices, s_Data.MaxIndices);
+        s_Data.QuadVertexArray.SetIndexBuffer(quadIB);
 
+
+        s_Data.WhiteTexture = Texture2D.Create(1, 1);
         s_Data.WhiteTexture = Texture2D.Create(1, 1);
         int whiteTextureData = 0xffffffff;
         ByteBuffer buf;
@@ -86,15 +128,36 @@ public class Renderer2D {
         s_Data.TextureShader.Bind();
         s_Data.TextureShader.SetMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
 
+        s_Data.QuadIndexCount = 0;
+        s_Data.QuadVertexBufferPtr = 0;
+        s_Data.QuadVertexBufferBase.clear();
+
         HB_PROFILE_FUNCTION_STOP();
+    }
+
+    private static void Flush()
+    {
+        RenderCommand.DrawIndexed(s_Data.QuadVertexArray, s_Data.QuadIndexCount);
     }
 
     public static void EndScene()
     {
         HB_PROFILE_FUNCTION();
 
+        int dataSize = s_Data.QuadVertexBufferBase.size();
+        var b = new float[s_Data.MaxVertices];
+        int i = 0;
+        for (var el : s_Data.QuadVertexBufferBase) {
+                b[i++] = el.Position.x; b[i++] = el.Position.y; b[i++] = el.Position.z;
+                b[i++] = el.Color.x; b[i++] = el.Color.y; b[i++] = el.Color.z; b[i++] = el.Color.w;
+                b[i++] = el.TexCoord.x; b[i++] = el.TexCoord.y;
+        }
+        s_Data.QuadVertexBuffer.SetData( b, dataSize);
+
+        Flush();
         HB_PROFILE_FUNCTION_STOP();
     }
+
 
     public static void DrawQuad(Vec2 position, Vec2 size, Vec4 color)
     {
@@ -105,16 +168,31 @@ public class Renderer2D {
     {
         HB_PROFILE_FUNCTION();
 
-        s_Data.TextureShader.SetFloat4("u_Color", color);
-        s_Data.TextureShader.SetFloat("u_TilingFactor", 1.0f);
-        s_Data.WhiteTexture.Bind();
+            s_Data.QuadVertexBufferBase.add(new QuadVertex(
+                    position,
+                    color,
+                    new Vec2(0.0f, 0.0f)));
+            s_Data.QuadVertexBufferPtr++;
 
-        Mat4 transform = new Mat4().translate(position)
-                .scale(new Vec3( size.x, size.y, 1.0f ));
-        s_Data.TextureShader.SetMat4("u_Transform", transform);
+            s_Data.QuadVertexBufferBase.add(new QuadVertex(
+                    new Vec3(position.x + size.x, position.y, 0.0f),
+                    color,
+                    new Vec2(1.0f, 0.0f)));
+            s_Data.QuadVertexBufferPtr++;
 
-        s_Data.QuadVertexArray.Bind();
-        RenderCommand.DrawIndexed(s_Data.QuadVertexArray);
+            s_Data.QuadVertexBufferBase.add(new QuadVertex(
+                    new Vec3(position.x + size.x, position.y + size.y, 0.0f),
+                    color,
+                    new Vec2(1.0f, 1.0f)));
+            s_Data.QuadVertexBufferPtr++;
+
+            s_Data.QuadVertexBufferBase.add(new QuadVertex(
+                    new Vec3(position.x, position.y + size.y, 0.0f),
+                    color,
+                    new Vec2(0.0f, 1.0f)));
+            s_Data.QuadVertexBufferPtr++;
+
+            s_Data.QuadIndexCount += 6;
 
         HB_PROFILE_FUNCTION_STOP();
     }

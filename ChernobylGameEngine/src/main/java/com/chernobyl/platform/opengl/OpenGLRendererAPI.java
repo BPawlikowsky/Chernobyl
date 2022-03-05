@@ -41,24 +41,29 @@ public class OpenGLRendererAPI extends RendererAPI {
         HB_PROFILE_FUNCTION_STOP();
     }
 
+    @Override
     public void SetViewport(int x, int y, int width, int height)
     {
         glViewport(x, y, width, height);
     }
 
+    @Override
     public void SetClearColor(Vec4 color)
     {
         glClearColor(color.x, color.y, color.x, color.z);
     }
 
+    @Override
     public void Clear()
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
-    public void DrawIndexed(VertexArray vertexArray)
+    @Override
+    public void DrawIndexed(VertexArray vertexArray, int indexCount)
     {
-        glDrawElements(GL_TRIANGLES, vertexArray.GetIndexBuffer().GetCount(), GL_UNSIGNED_INT, NULL);
+        int count = indexCount != 0 ? vertexArray.GetIndexBuffer().GetCount() : indexCount;
+        glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, NULL);
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 

@@ -20,7 +20,11 @@ public class RenderCommand {
     }
 
     public static void DrawIndexed(VertexArray vertexArray) {
-        s_RendererAPI.DrawIndexed(vertexArray);
+        s_RendererAPI.DrawIndexed(vertexArray, 0);
+    }
+
+    public static void DrawIndexed(VertexArray vertexArray, int count) {
+        s_RendererAPI.DrawIndexed(vertexArray, count);
     }
 
     public static void Init() {

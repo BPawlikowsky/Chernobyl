@@ -68,10 +68,10 @@ public class Sandbox2D extends Layer {
 
         HB_PROFILE_SCOPE("Renderer Draw");
         Renderer2D.BeginScene(m_CameraController.GetCamera());
+        // Renderer2D.DrawRotatedQuad(new Vec2( -1.0f, 2.0f ), new Vec2( 0.8f, 0.8f ), toRadians(45f), new Vec4( 0.8f, 0.2f, 0.3f, 1.0f ));
         Renderer2D.DrawQuad(new Vec2( -1.0f, 0.0f ), new Vec2( 0.8f, 0.8f ), new Vec4( 0.8f, 0.2f, 0.3f, 1.0f ));
-        Renderer2D.DrawRotatedQuad(new Vec2( -1.0f, 2.0f ), new Vec2( 0.8f, 0.8f ), toRadians(45f), new Vec4( 0.8f, 0.2f, 0.3f, 1.0f ));
-        Renderer2D.DrawQuad(new Vec2( 0.5f, -0.5f ), new Vec2( 0.5f, 0.75f ), new Vec4( 0.2f, 0.3f, 0.8f, 1.0f ));
-        Renderer2D.DrawQuad(new Vec3( 0.0f, 0.0f, -0.1f ), new Vec2( 10.0f, 10.0f ), m_CheckerboardTexture, 10.0f);
+        Renderer2D.DrawQuad(new Vec2( 0.5f, -0.5f ), new Vec2( 0.5f, 0.75f), new Vec4( 0.2f, 0.3f, 0.8f, 1.0f ));
+        // Renderer2D.DrawQuad(new Vec3( 0.0f, 0.0f, -0.1f ), new Vec2( 10.0f, 10.0f ), m_CheckerboardTexture, 10.0f);
         Renderer2D.EndScene();
         HB_PROFILE_SCOPE_STOP("Renderer Draw");
 

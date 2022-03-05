@@ -30,7 +30,7 @@ public abstract class RendererAPI {
     public abstract void SetClearColor(Vec4 color);
     public abstract void Clear();
 
-    public abstract void DrawIndexed(VertexArray vertexArray);
+    public abstract void DrawIndexed(VertexArray vertexArray, int indexCount);
 
     public static API GetAPI() { return s_API; }
 }
