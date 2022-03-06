@@ -33,6 +33,12 @@ public class Mat4 extends Matrix4f {
         return (Mat4) super.mul(right);
     }
 
+    public Vec3 mul(Vec4 right) {
+        var result = new Vec4();
+        super.transform(right, result);
+        return new Vec3(result.x, result.y, result.z);
+    }
+
     @Override
     public Mat4 ortho(float left, float right, float bottom, float top, float zNear, float zFar) {
         return (Mat4) super.ortho(left, right, bottom, top, zNear, zFar);

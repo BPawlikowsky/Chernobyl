@@ -14,8 +14,10 @@ public class OpenGLIndexBuffer extends IndexBuffer {
     public OpenGLIndexBuffer(int[] indices, int size) {
         HB_PROFILE_FUNCTION();
 
-        m_RendererID = glCreateBuffers();
         m_Count = size;
+        m_RendererID = glCreateBuffers();
+        // GL_ELEMENT_ARRAY_BUFFER is not valid without an actively bound VAO
+        // Binding with GL_ARRAY_BUFFER allows the data to be loaded regardless of VAO state.
         glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
         glBufferData(GL_ARRAY_BUFFER, indices, GL_STATIC_DRAW);
 

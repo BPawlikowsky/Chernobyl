@@ -1,5 +1,6 @@
 package com.chernobyl.gameengine.math;
 
+import org.joml.Matrix4fc;
 import org.joml.Vector4f;
 
 import java.nio.FloatBuffer;
@@ -23,5 +24,10 @@ public class Vec4 extends Vector4f {
 
     public Vec4() {
         super();
+    }
+
+    public Vec3 mul(Mat4 mat) {
+        var  result= super.mul(mat);
+        return new Vec3(result.x, result.y, result.z);
     }
 }
