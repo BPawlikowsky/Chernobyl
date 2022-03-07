@@ -15,7 +15,6 @@ import com.chernobyl.gameengine.renderer.VertexArray;
 import imgui.ImGui;
 
 import static com.chernobyl.gameengine.core.Instrumentor.*;
-import static com.chernobyl.gameengine.core.Instrumentor.ProfileResults;
 
 public class Sandbox2D extends Layer {
     private final OrthographicCameraController m_CameraController;
@@ -62,6 +61,7 @@ public class Sandbox2D extends Layer {
 
         // Render
         HB_PROFILE_SCOPE("Renderer Prep");
+        Renderer2D.ResetStats();
         RenderCommand.SetClearColor(new Vec4( 0.1f, 0.1f, 0.1f, 1 ));
         RenderCommand.Clear();
         HB_PROFILE_SCOPE_STOP("Renderer Prep");
@@ -72,9 +72,20 @@ public class Sandbox2D extends Layer {
         Renderer2D.BeginScene(m_CameraController.GetCamera());
         Renderer2D.DrawRotatedQuad(new Vec2( 1.0f, 0.0f ), new Vec2( 0.8f, 0.8f ), -45.0f, new Vec4( 0.8f, 0.2f, 0.3f, 1.0f ));
         Renderer2D.DrawQuad(new Vec2( -1.0f, 0.0f ), new Vec2( 0.8f, 0.8f ), new Vec4( 0.8f, 0.2f, 0.3f, 1.0f ));
-        Renderer2D.DrawQuad(new Vec2( 0.5f, -0.5f ), new Vec2( 0.5f, 0.75f ), new Vec4( 0.2f, 0.3f, 0.8f, 1.0f ));
-        Renderer2D.DrawQuad(new Vec3( 0.0f, 0.0f, -0.1f ), new Vec2( 10.0f, 10.0f ), m_CheckerboardTexture, 10.0f);
+        Renderer2D.DrawQuad(new Vec2( 0.5f, -0.5f ), new Vec2( 0.5f, 0.75f ), m_SquareColor);
+        Renderer2D.DrawQuad(new Vec3( 0.0f, 0.0f, -0.1f ), new Vec2( 20.0f, 20.0f ), m_CheckerboardTexture, 10.0f);
         Renderer2D.DrawRotatedQuad(new Vec3( -2.0f, 0.0f, 0.0f ), new Vec2( 1.0f, 1.0f ), rotation, m_CheckerboardTexture, 20.0f);
+        Renderer2D.EndScene();
+
+        Renderer2D.BeginScene(m_CameraController.GetCamera());
+        for (float y = -5.0f; y < 5.0f; y += 0.5f)
+        {
+            for (float x = -5.0f; x < 5.0f; x += 0.5f)
+            {
+                Vec4 color = new Vec4( (x + 5.0f) / 10.0f, 0.4f, (y + 5.0f) / 10.0f, 0.7f );
+                Renderer2D.DrawQuad(new Vec2( x, y ), new Vec2( 0.45f, 0.45f ), color);
+            }
+        }
         Renderer2D.EndScene();
         HB_PROFILE_SCOPE_STOP("Renderer Draw");
 
@@ -87,18 +98,17 @@ public class Sandbox2D extends Layer {
     {
         HB_PROFILE_FUNCTION();
         ImGui.begin("Settings");
+        var stats = Renderer2D.GetStats();
+        ImGui.text("Renderer2D Stats:");
+        ImGui.text("Draw Calls: " + stats.DrawCalls);
+        ImGui.text("Quads: " + stats.QuadCount);
+        ImGui.text("Vertices: " + stats.GetTotalVertexCount());
+        ImGui.text("Indices: " + stats.GetTotalIndexCount());
         float[] arr = { m_SquareColor.x, m_SquareColor.y, m_SquareColor.z, m_SquareColor.w };
         ImGui.colorEdit4("Square Color", arr);
         m_SquareColor = new Vec4(arr[0], arr[1], arr[2], arr[3]);
         ImGui.end();
 
-        for (var result : ProfileResults)
-        {
-            String label = result.Name +
-                    String.format(" %.3fms ", result.Time);
-            ImGui.text(label);
-        }
-        ProfileResults.clear();
         HB_PROFILE_FUNCTION_STOP();
     }
 

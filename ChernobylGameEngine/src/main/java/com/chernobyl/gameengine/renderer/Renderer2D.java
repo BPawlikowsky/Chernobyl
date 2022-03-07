@@ -39,13 +39,28 @@ public class Renderer2D {
             Color = color;
             TexCoord = texCoord;
         }
+        // size in floats
+        public static int size() {
+            return Vec3.class.getFields().length +
+                    Vec4.class.getFields().length +
+                    Vec2.class.getFields().length + 2;
+        }
+    }
+
+    public static class Statistics
+    {
+        public int DrawCalls = 0;
+        public int QuadCount = 0;
+
+        public int GetTotalVertexCount() { return QuadCount * 4; }
+        public int GetTotalIndexCount() { return QuadCount * 6; }
     }
 
     static class Renderer2DData
     {
-        int MaxQuads = 100;
-		int MaxVertices = MaxQuads * 4;
-		int MaxIndices = MaxQuads * 6;
+        static final int MaxQuads = 20000;
+		static final int MaxVertices = MaxQuads * 4;
+		static final int MaxIndices = MaxQuads * 6;
         static final int MaxTextureSlots = 32;
 
         VertexArray QuadVertexArray;
@@ -62,6 +77,8 @@ public class Renderer2D {
 
         Vec4[] QuadVertexPositions = new Vec4[4];
 
+        Statistics Stats = new Statistics();
+
     }
 
 
@@ -72,7 +89,7 @@ public class Renderer2D {
         HB_PROFILE_FUNCTION();
 
         s_Data.QuadVertexArray = VertexArray.Create();
-        s_Data.QuadVertexBuffer = VertexBuffer.Create(s_Data.MaxVertices * Float.BYTES);
+        s_Data.QuadVertexBuffer = VertexBuffer.Create(s_Data.MaxVertices * Float.BYTES * QuadVertex.size());
 
         s_Data.QuadVertexBuffer.SetLayout(new BufferLayout(new BufferElement[]{
                 new BufferElement(ShaderDataType.Float3, "a_Position"),
@@ -168,6 +185,19 @@ public class Renderer2D {
         for (int i = 0; i < s_Data.TextureSlotIndex; i++)
             s_Data.TextureSlots[i].Bind(i);
         RenderCommand.DrawIndexed(s_Data.QuadVertexArray, s_Data.QuadIndexCount);
+
+        s_Data.Stats.DrawCalls++;
+    }
+
+    private static void FlushAndReset()
+    {
+        EndScene();
+
+        s_Data.QuadIndexCount = 0;
+        s_Data.QuadVertexBufferPtr = 0;
+        s_Data.QuadVertexBufferBase.clear();
+
+        s_Data.TextureSlotIndex = 1;
     }
 
     public static void EndScene()
@@ -175,7 +205,7 @@ public class Renderer2D {
         HB_PROFILE_FUNCTION();
 
         int dataSize = s_Data.QuadVertexBufferBase.size();
-        var b = new float[s_Data.MaxVertices];
+        var b = new float[s_Data.MaxVertices * (QuadVertex.size())];
         int i = 0;
         for (var el : s_Data.QuadVertexBufferBase) {
                 b[i++] = el.Position.x; b[i++] = el.Position.y; b[i++] = el.Position.z;
@@ -186,6 +216,7 @@ public class Renderer2D {
         s_Data.QuadVertexBuffer.SetData( b, dataSize);
 
         Flush();
+
         HB_PROFILE_FUNCTION_STOP();
     }
 
@@ -198,6 +229,9 @@ public class Renderer2D {
     public static void DrawQuad(Vec3 position, Vec2 size, Vec4 color)
     {
         HB_PROFILE_FUNCTION();
+
+        if (s_Data.QuadIndexCount >= Renderer2DData.MaxIndices)
+            FlushAndReset();
 
         final float textureIndex = 0.0f; // White Texture
 		final float tilingFactor = 1.0f;
@@ -240,6 +274,8 @@ public class Renderer2D {
 
         s_Data.QuadIndexCount += 6;
 
+        s_Data.Stats.QuadCount++;
+
         HB_PROFILE_FUNCTION_STOP();
     }
 
@@ -255,6 +291,9 @@ public class Renderer2D {
     public static void DrawQuad(Vec3 position, Vec2 size, Texture2D texture, float tilingFactor)
     {
         HB_PROFILE_FUNCTION();
+
+        if (s_Data.QuadIndexCount >= Renderer2DData.MaxIndices)
+            FlushAndReset();
 
         final Vec4 color = new Vec4( 1.0f, 1.0f, 1.0f, 1.0f );
 
@@ -314,6 +353,8 @@ public class Renderer2D {
 
         s_Data.QuadIndexCount += 6;
 
+        s_Data.Stats.QuadCount++;
+
         HB_PROFILE_FUNCTION_STOP();
     }
 
@@ -325,6 +366,9 @@ public class Renderer2D {
     public static void DrawRotatedQuad(Vec3 position, Vec2 size, float rotation, Vec4 color)
     {
         HB_PROFILE_FUNCTION();
+
+        if (s_Data.QuadIndexCount >= Renderer2DData.MaxIndices)
+            FlushAndReset();
 
         final float textureIndex = 0.0f; // White Texture
 		final float tilingFactor = 1.0f;
@@ -366,6 +410,8 @@ public class Renderer2D {
         s_Data.QuadVertexBufferPtr++;
 
         s_Data.QuadIndexCount += 6;
+
+        s_Data.Stats.QuadCount++;
 
         HB_PROFILE_FUNCTION_STOP();
     }
@@ -385,6 +431,9 @@ public class Renderer2D {
     {
         HB_PROFILE_FUNCTION();
 
+        if (s_Data.QuadIndexCount >= Renderer2DData.MaxIndices)
+            FlushAndReset();
+
         final Vec4 color = new Vec4( 1.0f, 1.0f, 1.0f, 1.0f );
 
         float textureIndex = 0.0f;
@@ -441,7 +490,19 @@ public class Renderer2D {
         s_Data.QuadVertexBufferPtr++;
 
         s_Data.QuadIndexCount += 6;
-        
+
+        s_Data.Stats.QuadCount++;
+
         HB_PROFILE_FUNCTION_STOP();
+    }
+
+    public static void ResetStats()
+    {
+        s_Data.Stats = new Statistics();
+    }
+
+    public static Statistics GetStats()
+    {
+        return s_Data.Stats;
     }
 }
