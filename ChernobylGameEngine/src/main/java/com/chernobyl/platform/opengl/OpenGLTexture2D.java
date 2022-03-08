@@ -122,6 +122,11 @@ public class OpenGLTexture2D extends Texture2D {
     }
 
     @Override
+    public int GetRendererID() {
+        return m_RendererID;
+    }
+
+    @Override
     public void Bind() {
         HB_PROFILE_FUNCTION();
 

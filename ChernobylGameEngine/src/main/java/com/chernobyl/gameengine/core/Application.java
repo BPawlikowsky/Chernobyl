@@ -94,6 +94,11 @@ public class Application {
         HB_PROFILE_FUNCTION_STOP();
     }
 
+    public void Close()
+    {
+        m_Running = false;
+    }
+
     private void onEvent(Event e) {
         HB_PROFILE_FUNCTION();
 
@@ -144,5 +149,9 @@ public class Application {
         HB_PROFILE_FUNCTION_STOP();
 
         return false;
+    }
+
+    public static Application Get() {
+        return s_Instance;
     }
 }
