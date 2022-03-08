@@ -62,7 +62,7 @@ public class OpenGLRendererAPI extends RendererAPI {
     @Override
     public void DrawIndexed(VertexArray vertexArray, int indexCount)
     {
-        int count = indexCount != 0 ? vertexArray.GetIndexBuffer().GetCount() : indexCount;
+        int count = indexCount != 0 ? indexCount : vertexArray.GetIndexBuffer().GetCount();
         glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, NULL);
         glBindTexture(GL_TEXTURE_2D, 0);
     }

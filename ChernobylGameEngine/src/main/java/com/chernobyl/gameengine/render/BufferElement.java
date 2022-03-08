@@ -45,9 +45,9 @@ public class BufferElement {
             case Float4:
                 return 4;
             case Mat3:
-                return 3 * 3;
+                return 3; // * 3 float3
             case Mat4:
-                return 4 * 4;
+                return 4; // * 4 float4
             case Int:
                 return 1;
             case Int2:

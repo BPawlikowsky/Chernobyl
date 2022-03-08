@@ -230,47 +230,31 @@ public class Renderer2D {
     {
         HB_PROFILE_FUNCTION();
 
-        if (s_Data.QuadIndexCount >= Renderer2DData.MaxIndices)
-            FlushAndReset();
+        final int quadVertexCount = 4;
 
         final float textureIndex = 0.0f; // White Texture
+        final Vec2[] textureCoords = new Vec2[] {
+                new Vec2( 0.0f, 0.0f ), new Vec2( 1.0f, 0.0f ),
+                new Vec2( 1.0f, 1.0f ), new Vec2( 0.0f, 1.0f )
+        };
 		final float tilingFactor = 1.0f;
+
+        if (s_Data.QuadIndexCount >= Renderer2DData.MaxIndices)
+            FlushAndReset();
 
         Mat4 transform = new Mat4().translate(position)
                 .scale(new Vec3( size.x, size.y, 1.0f ));
 
 
-        s_Data.QuadVertexBufferBase.add(new QuadVertex(
-                transform.mul(s_Data.QuadVertexPositions[0]),
-                color,
-                new Vec2(0.0f, 0.0f)));
-        s_Data.QuadVertexBufferBase.get(s_Data.QuadVertexBufferPtr).TexIndex = textureIndex;
-        s_Data.QuadVertexBufferBase.get(s_Data.QuadVertexBufferPtr).TilingFactor = tilingFactor;
-        s_Data.QuadVertexBufferPtr++;
-
-        s_Data.QuadVertexBufferBase.add(new QuadVertex(
-                transform.mul(s_Data.QuadVertexPositions[1]),
-                color,
-                new Vec2(1.0f, 0.0f)));
-        s_Data.QuadVertexBufferBase.get(s_Data.QuadVertexBufferPtr).TexIndex = textureIndex;
-        s_Data.QuadVertexBufferBase.get(s_Data.QuadVertexBufferPtr).TilingFactor = tilingFactor;
-        s_Data.QuadVertexBufferPtr++;
-
-        s_Data.QuadVertexBufferBase.add(new QuadVertex(
-                transform.mul(s_Data.QuadVertexPositions[2]),
-                color,
-                new Vec2(1.0f, 1.0f)));
-        s_Data.QuadVertexBufferBase.get(s_Data.QuadVertexBufferPtr).TexIndex = textureIndex;
-        s_Data.QuadVertexBufferBase.get(s_Data.QuadVertexBufferPtr).TilingFactor = tilingFactor;
-        s_Data.QuadVertexBufferPtr++;
-
-        s_Data.QuadVertexBufferBase.add(new QuadVertex(
-                transform.mul(s_Data.QuadVertexPositions[3]),
-                color,
-                new Vec2(0.0f, 1.0f)));
-        s_Data.QuadVertexBufferBase.get(s_Data.QuadVertexBufferPtr).TexIndex = textureIndex;
-        s_Data.QuadVertexBufferBase.get(s_Data.QuadVertexBufferPtr).TilingFactor = tilingFactor;
-        s_Data.QuadVertexBufferPtr++;
+        for (int i = 0; i < quadVertexCount; i++) {
+            s_Data.QuadVertexBufferBase.add(new QuadVertex(
+                    transform.mul(s_Data.QuadVertexPositions[i]),
+                    color,
+                    textureCoords[i]));
+            s_Data.QuadVertexBufferBase.get(s_Data.QuadVertexBufferPtr).TexIndex = textureIndex;
+            s_Data.QuadVertexBufferBase.get(s_Data.QuadVertexBufferPtr).TilingFactor = tilingFactor;
+            s_Data.QuadVertexBufferPtr++;
+        }
 
         s_Data.QuadIndexCount += 6;
 
@@ -292,10 +276,15 @@ public class Renderer2D {
     {
         HB_PROFILE_FUNCTION();
 
+        final int quadVertexCount = 4;
+        final Vec4 color = new Vec4( 1.0f, 1.0f, 1.0f, 1.0f );
+        final Vec2[] textureCoords = new Vec2[] {
+                new Vec2( 0.0f, 0.0f ), new Vec2( 1.0f, 0.0f ),
+                new Vec2( 1.0f, 1.0f ), new Vec2( 0.0f, 1.0f )
+        };
+
         if (s_Data.QuadIndexCount >= Renderer2DData.MaxIndices)
             FlushAndReset();
-
-        final Vec4 color = new Vec4( 1.0f, 1.0f, 1.0f, 1.0f );
 
         float textureIndex = 0.0f;
         for (int i = 1; i < s_Data.TextureSlotIndex; i++)
@@ -319,37 +308,15 @@ public class Renderer2D {
                 .scale(new Vec3( size.x, size.y, 1.0f ));
 
 
-        s_Data.QuadVertexBufferBase.add(new QuadVertex(
-                transform.mul(s_Data.QuadVertexPositions[0]),
-                color,
-                new Vec2(0.0f, 0.0f)));
-        s_Data.QuadVertexBufferBase.get(s_Data.QuadVertexBufferPtr).TexIndex = textureIndex;
-        s_Data.QuadVertexBufferBase.get(s_Data.QuadVertexBufferPtr).TilingFactor = tilingFactor;
-        s_Data.QuadVertexBufferPtr++;
-
-        s_Data.QuadVertexBufferBase.add(new QuadVertex(
-                transform.mul(s_Data.QuadVertexPositions[1]),
-                color,
-                new Vec2(1.0f, 0.0f)));
-        s_Data.QuadVertexBufferBase.get(s_Data.QuadVertexBufferPtr).TexIndex = textureIndex;
-        s_Data.QuadVertexBufferBase.get(s_Data.QuadVertexBufferPtr).TilingFactor = tilingFactor;
-        s_Data.QuadVertexBufferPtr++;
-
-        s_Data.QuadVertexBufferBase.add(new QuadVertex(
-                transform.mul(s_Data.QuadVertexPositions[2]),
-                color,
-                new Vec2(1.0f, 1.0f)));
-        s_Data.QuadVertexBufferBase.get(s_Data.QuadVertexBufferPtr).TexIndex = textureIndex;
-        s_Data.QuadVertexBufferBase.get(s_Data.QuadVertexBufferPtr).TilingFactor = tilingFactor;
-        s_Data.QuadVertexBufferPtr++;
-
-        s_Data.QuadVertexBufferBase.add(new QuadVertex(
-                transform.mul(s_Data.QuadVertexPositions[3]),
-                color,
-                new Vec2(0.0f, 1.0f)));
-        s_Data.QuadVertexBufferBase.get(s_Data.QuadVertexBufferPtr).TexIndex = textureIndex;
-        s_Data.QuadVertexBufferBase.get(s_Data.QuadVertexBufferPtr).TilingFactor = tilingFactor;
-        s_Data.QuadVertexBufferPtr++;
+        for (int i = 0; i < quadVertexCount; i++) {
+            s_Data.QuadVertexBufferBase.add(new QuadVertex(
+                    transform.mul(s_Data.QuadVertexPositions[i]),
+                    color,
+                    textureCoords[i]));
+            s_Data.QuadVertexBufferBase.get(s_Data.QuadVertexBufferPtr).TexIndex = textureIndex;
+            s_Data.QuadVertexBufferBase.get(s_Data.QuadVertexBufferPtr).TilingFactor = tilingFactor;
+            s_Data.QuadVertexBufferPtr++;
+        }
 
         s_Data.QuadIndexCount += 6;
 
@@ -367,47 +334,30 @@ public class Renderer2D {
     {
         HB_PROFILE_FUNCTION();
 
+        final int quadVertexCount = 4;
+        final float textureIndex = 0.0f; // White Texture
+        final Vec2[] textureCoords = new Vec2[] {
+                new Vec2( 0.0f, 0.0f ), new Vec2( 1.0f, 0.0f ),
+                new Vec2( 1.0f, 1.0f ), new Vec2( 0.0f, 1.0f )
+        };
+		final float tilingFactor = 1.0f;
+
         if (s_Data.QuadIndexCount >= Renderer2DData.MaxIndices)
             FlushAndReset();
-
-        final float textureIndex = 0.0f; // White Texture
-		final float tilingFactor = 1.0f;
 
         Mat4 transform = new Mat4().translate(position)
                 .rotate(toRadians(rotation), new Vec3( 0.0f, 0.0f, 1.0f ))
                 .scale(new Vec3( size.x, size.y, 1.0f ));
 
-        s_Data.QuadVertexBufferBase.add(new QuadVertex(
-                transform.mul(s_Data.QuadVertexPositions[0]),
-                color,
-                new Vec2(0.0f, 0.0f)));
-        s_Data.QuadVertexBufferBase.get(s_Data.QuadVertexBufferPtr).TexIndex = textureIndex;
-        s_Data.QuadVertexBufferBase.get(s_Data.QuadVertexBufferPtr).TilingFactor = tilingFactor;
-        s_Data.QuadVertexBufferPtr++;
-
-        s_Data.QuadVertexBufferBase.add(new QuadVertex(
-                transform.mul(s_Data.QuadVertexPositions[1]),
-                color,
-                new Vec2(1.0f, 0.0f)));
-        s_Data.QuadVertexBufferBase.get(s_Data.QuadVertexBufferPtr).TexIndex = textureIndex;
-        s_Data.QuadVertexBufferBase.get(s_Data.QuadVertexBufferPtr).TilingFactor = tilingFactor;
-        s_Data.QuadVertexBufferPtr++;
-
-        s_Data.QuadVertexBufferBase.add(new QuadVertex(
-                transform.mul(s_Data.QuadVertexPositions[2]),
-                color,
-                new Vec2(1.0f, 1.0f)));
-        s_Data.QuadVertexBufferBase.get(s_Data.QuadVertexBufferPtr).TexIndex = textureIndex;
-        s_Data.QuadVertexBufferBase.get(s_Data.QuadVertexBufferPtr).TilingFactor = tilingFactor;
-        s_Data.QuadVertexBufferPtr++;
-
-        s_Data.QuadVertexBufferBase.add(new QuadVertex(
-                transform.mul(s_Data.QuadVertexPositions[3]),
-                color,
-                new Vec2(0.0f, 1.0f)));
-        s_Data.QuadVertexBufferBase.get(s_Data.QuadVertexBufferPtr).TexIndex = textureIndex;
-        s_Data.QuadVertexBufferBase.get(s_Data.QuadVertexBufferPtr).TilingFactor = tilingFactor;
-        s_Data.QuadVertexBufferPtr++;
+        for (int i = 0; i < quadVertexCount; i++) {
+            s_Data.QuadVertexBufferBase.add(new QuadVertex(
+                    transform.mul(s_Data.QuadVertexPositions[i]),
+                    color,
+                    textureCoords[i]));
+            s_Data.QuadVertexBufferBase.get(s_Data.QuadVertexBufferPtr).TexIndex = textureIndex;
+            s_Data.QuadVertexBufferBase.get(s_Data.QuadVertexBufferPtr).TilingFactor = tilingFactor;
+            s_Data.QuadVertexBufferPtr++;
+        }
 
         s_Data.QuadIndexCount += 6;
 
@@ -431,12 +381,17 @@ public class Renderer2D {
     {
         HB_PROFILE_FUNCTION();
 
+        final int quadVertexCount = 4;
+        final Vec4 color = new Vec4( 1.0f, 1.0f, 1.0f, 1.0f );
+        final Vec2[] textureCoords = new Vec2[] {
+                new Vec2( 0.0f, 0.0f ), new Vec2( 1.0f, 0.0f ),
+                new Vec2( 1.0f, 1.0f ), new Vec2( 0.0f, 1.0f )
+        };
+
         if (s_Data.QuadIndexCount >= Renderer2DData.MaxIndices)
             FlushAndReset();
 
-        final Vec4 color = new Vec4( 1.0f, 1.0f, 1.0f, 1.0f );
-
-        float textureIndex = 0.0f;
+        float textureIndex = 0.0f; // White Texture
         for (int i = 1; i < s_Data.TextureSlotIndex; i++)
         {
             if (s_Data.TextureSlots[i].equals(texture))
@@ -457,37 +412,15 @@ public class Renderer2D {
                 .rotate(toRadians(rotation), new Vec3( 0.0f, 0.0f, 1.0f ))
                 .scale(new Vec3( size.x, size.y, 1.0f ));
 
-        s_Data.QuadVertexBufferBase.add(new QuadVertex(
-                transform.mul(s_Data.QuadVertexPositions[0]),
-                color,
-                new Vec2(0.0f, 0.0f)));
-        s_Data.QuadVertexBufferBase.get(s_Data.QuadVertexBufferPtr).TexIndex = textureIndex;
-        s_Data.QuadVertexBufferBase.get(s_Data.QuadVertexBufferPtr).TilingFactor = tilingFactor;
-        s_Data.QuadVertexBufferPtr++;
-
-        s_Data.QuadVertexBufferBase.add(new QuadVertex(
-                transform.mul(s_Data.QuadVertexPositions[1]),
-                color,
-                new Vec2(1.0f, 0.0f)));
-        s_Data.QuadVertexBufferBase.get(s_Data.QuadVertexBufferPtr).TexIndex = textureIndex;
-        s_Data.QuadVertexBufferBase.get(s_Data.QuadVertexBufferPtr).TilingFactor = tilingFactor;
-        s_Data.QuadVertexBufferPtr++;
-
-        s_Data.QuadVertexBufferBase.add(new QuadVertex(
-                transform.mul(s_Data.QuadVertexPositions[2]),
-                color,
-                new Vec2(1.0f, 1.0f)));
-        s_Data.QuadVertexBufferBase.get(s_Data.QuadVertexBufferPtr).TexIndex = textureIndex;
-        s_Data.QuadVertexBufferBase.get(s_Data.QuadVertexBufferPtr).TilingFactor = tilingFactor;
-        s_Data.QuadVertexBufferPtr++;
-
-        s_Data.QuadVertexBufferBase.add(new QuadVertex(
-                transform.mul(s_Data.QuadVertexPositions[3]),
-                color,
-                new Vec2(0.0f, 1.0f)));
-        s_Data.QuadVertexBufferBase.get(s_Data.QuadVertexBufferPtr).TexIndex = textureIndex;
-        s_Data.QuadVertexBufferBase.get(s_Data.QuadVertexBufferPtr).TilingFactor = tilingFactor;
-        s_Data.QuadVertexBufferPtr++;
+        for (int i = 0; i < quadVertexCount; i++) {
+            s_Data.QuadVertexBufferBase.add(new QuadVertex(
+                    transform.mul(s_Data.QuadVertexPositions[i]),
+                    color,
+                    textureCoords[i]));
+            s_Data.QuadVertexBufferBase.get(s_Data.QuadVertexBufferPtr).TexIndex = textureIndex;
+            s_Data.QuadVertexBufferBase.get(s_Data.QuadVertexBufferPtr).TilingFactor = tilingFactor;
+            s_Data.QuadVertexBufferPtr++;
+        }
 
         s_Data.QuadIndexCount += 6;
 
